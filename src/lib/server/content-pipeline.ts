@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, readdirSync, existsSync } from 'fs';
 import { resolve, basename } from 'path';
 import matter from 'gray-matter';
 import { nanoid } from 'nanoid';
@@ -57,7 +57,6 @@ export function normalizeMarkdown(filename: string, rawContent: string): string 
 	let parsed: { data: Record<string, unknown>; content: string };
 
 	if (!rawContent.trimStart().startsWith('---')) {
-		// No frontmatter — treat entire content as body
 		parsed = { data: {}, content: rawContent };
 	} else {
 		const result = matter(rawContent);
@@ -66,7 +65,6 @@ export function normalizeMarkdown(filename: string, rawContent: string): string 
 
 	const fm = parsed.data;
 
-	// Ensure required fields
 	if (!fm.title || (typeof fm.title === 'string' && !fm.title.trim())) {
 		fm.title = titleFromFilename(filename);
 	}
@@ -83,13 +81,11 @@ export function normalizeMarkdown(filename: string, rawContent: string): string 
 	}
 
 	const body = parsed.content.trim();
-
-	// Reconstruct markdown with frontmatter
 	const normalized = matter.stringify(body ? body + '\n' : '', fm);
 	return normalized;
 }
 
-export function syncMarkdownFiles() {
+export async function syncMarkdownFiles() {
 	if (!existsSync(CONTENT_DIR)) return;
 
 	const files = readdirSync(CONTENT_DIR).filter((f) => f.endsWith('.md'));
@@ -100,15 +96,10 @@ export function syncMarkdownFiles() {
 		const raw = readFileSync(filePath, 'utf-8');
 		const normalized = normalizeMarkdown(file, raw);
 
-		// Write back only if changed
-		if (normalized !== raw) {
-			writeFileSync(filePath, normalized, 'utf-8');
-		}
-
 		const { data, content } = matter(normalized);
 		const fm = data as ProblemFrontmatter;
 
-		const existing = db.select().from(problems).where(eq(problems.slug, slug)).get();
+		const existing = await db.select().from(problems).where(eq(problems.slug, slug)).get();
 
 		const problemData = {
 			slug,
@@ -124,29 +115,23 @@ export function syncMarkdownFiles() {
 		};
 
 		if (existing) {
-			db.update(problems).set(problemData).where(eq(problems.id, existing.id)).run();
+			await db.update(problems).set(problemData).where(eq(problems.id, existing.id)).run();
 		} else {
-			db.insert(problems)
+			await db.insert(problems)
 				.values({ id: nanoid(), ...problemData })
 				.run();
 		}
 	}
 }
 
-export function importMarkdownFile(filename: string, content: string) {
+export async function importMarkdownFile(filename: string, content: string) {
 	const slug = basename(filename, '.md');
 	const normalized = normalizeMarkdown(filename, content);
 
-	// Write the normalized file to content/problems/
-	const destPath = resolve(CONTENT_DIR, filename);
-	writeFileSync(destPath, normalized, 'utf-8');
-
-	// Parse the normalized content
 	const { data, content: body } = matter(normalized);
 	const fm = data as ProblemFrontmatter;
 
-	// Upsert into DB
-	const existing = db.select().from(problems).where(eq(problems.slug, slug)).get();
+	const existing = await db.select().from(problems).where(eq(problems.slug, slug)).get();
 
 	const problemData = {
 		slug,
@@ -163,17 +148,17 @@ export function importMarkdownFile(filename: string, content: string) {
 
 	let id: string;
 	if (existing) {
-		db.update(problems).set(problemData).where(eq(problems.id, existing.id)).run();
+		await db.update(problems).set(problemData).where(eq(problems.id, existing.id)).run();
 		id = existing.id;
 	} else {
 		id = nanoid();
-		db.insert(problems).values({ id, ...problemData }).run();
+		await db.insert(problems).values({ id, ...problemData }).run();
 	}
 
 	return { id, title: fm.title };
 }
 
-export function insertProblemFromText(
+export async function insertProblemFromText(
 	title: string,
 	description: string,
 	difficulty: string,
@@ -183,7 +168,7 @@ export function insertProblemFromText(
 	const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 	const id = nanoid();
 
-	db.insert(problems)
+	await db.insert(problems)
 		.values({
 			id,
 			slug,

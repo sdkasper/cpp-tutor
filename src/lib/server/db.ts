@@ -1,22 +1,16 @@
-import Database from 'better-sqlite3';
-import { drizzle } from 'drizzle-orm/better-sqlite3';
+import { createClient } from '@libsql/client';
+import { drizzle } from 'drizzle-orm/libsql';
 import * as schema from './schema.js';
-import { existsSync, mkdirSync } from 'fs';
-import { resolve } from 'path';
 
-const dataDir = resolve('data');
-if (!existsSync(dataDir)) {
-	mkdirSync(dataDir, { recursive: true });
-}
+const client = createClient({
+	url: process.env.TURSO_DATABASE_URL ?? 'file:data/cpp-tutor.db',
+	authToken: process.env.TURSO_AUTH_TOKEN
+});
 
-const sqlite = new Database(resolve(dataDir, 'cpp-tutor.db'));
-sqlite.pragma('journal_mode = WAL');
-sqlite.pragma('foreign_keys = ON');
+export const db = drizzle(client, { schema });
 
-export const db = drizzle(sqlite, { schema });
-
-export function initDb() {
-	sqlite.exec(`
+export async function initDb() {
+	await client.executeMultiple(`
 		CREATE TABLE IF NOT EXISTS students (
 			id TEXT PRIMARY KEY,
 			name TEXT NOT NULL UNIQUE,

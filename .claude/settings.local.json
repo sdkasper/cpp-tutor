@@ -4,7 +4,14 @@
       "Bash(cd:*)",
       "Bash(rm:*)",
       "Bash(gh auth:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(turso:*)",
+      "Bash(gh release:*)",
+      "mcp__patapim-browser__browser_screenshot",
+      "mcp__patapim-browser__browser_navigate",
+      "mcp__patapim-browser__browser_click",
+      "mcp__patapim-browser__browser_evaluate",
+      "Bash(git add:*)"
     ]
   }
 }

@@ -16,13 +16,13 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		return new Response(JSON.stringify({ error: 'Missing fields' }), { status: 400 });
 	}
 
-	const problem = db.select().from(problems).where(eq(problems.id, problemId)).get();
+	const problem = await db.select().from(problems).where(eq(problems.id, problemId)).get();
 	if (!problem) {
 		return new Response(JSON.stringify({ error: 'Problem not found' }), { status: 404 });
 	}
 
 	// Get or create conversation
-	let conversation = db
+	let conversation = await db
 		.select()
 		.from(conversations)
 		.where(and(eq(conversations.student_id, studentId), eq(conversations.problem_id, problemId)))
@@ -30,30 +30,30 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
 	if (!conversation) {
 		const convId = nanoid();
-		db.insert(conversations)
+		await db.insert(conversations)
 			.values({ id: convId, student_id: studentId, problem_id: problemId, created_at: new Date().toISOString() })
 			.run();
 		conversation = { id: convId, student_id: studentId, problem_id: problemId, created_at: new Date().toISOString() };
 	}
 
 	// Save user message
-	db.insert(messages)
+	await db.insert(messages)
 		.values({ id: nanoid(), conversation_id: conversation.id, role: 'user', content: message, created_at: new Date().toISOString() })
 		.run();
 
 	// Update progress
-	const progress = db
+	const progress = await db
 		.select()
 		.from(studentProgress)
 		.where(and(eq(studentProgress.student_id, studentId), eq(studentProgress.problem_id, problemId)))
 		.get();
 
 	if (!progress) {
-		db.insert(studentProgress)
+		await db.insert(studentProgress)
 			.values({ student_id: studentId, problem_id: problemId, status: 'in_progress', current_code: currentCode ?? '', hints_used: 0, started_at: new Date().toISOString() })
 			.run();
 	} else {
-		db.update(studentProgress)
+		await db.update(studentProgress)
 			.set({ current_code: currentCode ?? progress.current_code, status: 'in_progress' })
 			.where(and(eq(studentProgress.student_id, studentId), eq(studentProgress.problem_id, problemId)))
 			.run();
@@ -62,11 +62,13 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 	const hintsUsed = progress?.hints_used ?? 0;
 
 	// Get conversation history
-	const history = db
+	const historyRows = await db
 		.select()
 		.from(messages)
 		.where(eq(messages.conversation_id, conversation.id))
-		.all()
+		.all();
+
+	const history = historyRows
 		.slice(-20) // Keep last 20 messages for context
 		.map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content }));
 
@@ -92,19 +94,19 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 				}
 
 				// Save assistant message
-				db.insert(messages)
+				await db.insert(messages)
 					.values({ id: nanoid(), conversation_id: conversation!.id, role: 'assistant', content: fullResponse, created_at: new Date().toISOString() })
 					.run();
 
 				// Update hints used
-				db.update(studentProgress)
+				await db.update(studentProgress)
 					.set({ hints_used: hintsUsed + 1 })
 					.where(and(eq(studentProgress.student_id, studentId), eq(studentProgress.problem_id, problemId)))
 					.run();
 
 				// Check for problem solved
 				if (detectProblemSolved(fullResponse)) {
-					db.update(studentProgress)
+					await db.update(studentProgress)
 						.set({ status: 'completed', completed_at: new Date().toISOString() })
 						.where(and(eq(studentProgress.student_id, studentId), eq(studentProgress.problem_id, problemId)))
 						.run();

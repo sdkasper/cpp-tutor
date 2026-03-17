@@ -8,16 +8,16 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 	const studentId = cookies.get('student_id');
 	if (!studentId) throw redirect(303, '/');
 
-	const problem = db.select().from(problems).where(eq(problems.id, params.problemId)).get();
+	const problem = await db.select().from(problems).where(eq(problems.id, params.problemId)).get();
 	if (!problem) throw redirect(303, '/problems');
 
-	const progress = db
+	const progress = await db
 		.select()
 		.from(studentProgress)
 		.where(and(eq(studentProgress.student_id, studentId), eq(studentProgress.problem_id, problem.id)))
 		.get();
 
-	const conversation = db
+	const conversation = await db
 		.select()
 		.from(conversations)
 		.where(and(eq(conversations.student_id, studentId), eq(conversations.problem_id, problem.id)))
@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
 
 	let chatHistory: { role: string; content: string; created_at: string }[] = [];
 	if (conversation) {
-		chatHistory = db.select().from(messages).where(eq(messages.conversation_id, conversation.id)).all();
+		chatHistory = await db.select().from(messages).where(eq(messages.conversation_id, conversation.id)).all();
 	}
 
 	return {

@@ -7,6 +7,6 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 	const studentId = cookies.get('student_id');
 	if (!studentId) return { student: null };
 
-	const student = db.select().from(students).where(eq(students.id, studentId)).get();
+	const student = await db.select().from(students).where(eq(students.id, studentId)).get();
 	return { student: student ?? null };
 };

@@ -8,8 +8,8 @@ export const load: PageServerLoad = async ({ cookies }) => {
 	const studentId = cookies.get('student_id');
 	if (!studentId) throw redirect(303, '/');
 
-	const allProblems = db.select().from(problems).orderBy(asc(problems.sort_order)).all();
-	const progress = db.select().from(studentProgress).where(eq(studentProgress.student_id, studentId)).all();
+	const allProblems = await db.select().from(problems).orderBy(asc(problems.sort_order)).all();
+	const progress = await db.select().from(studentProgress).where(eq(studentProgress.student_id, studentId)).all();
 
 	const progressMap = new Map(progress.map((p) => [p.problem_id, p]));
 

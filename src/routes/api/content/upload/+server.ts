@@ -15,7 +15,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	if (filename.endsWith('.md')) {
 		const text = await file.text();
-		const result = importMarkdownFile(file.name, text);
+		const result = await importMarkdownFile(file.name, text);
 		return json(result);
 	}
 
@@ -30,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const buffer = Buffer.from(await file.arrayBuffer());
 	const pdfText = await extractTextFromPdf(buffer);
 
-	const id = insertProblemFromText(title, pdfText, difficulty || 'beginner', 'pdf', file.name);
+	const id = await insertProblemFromText(title, pdfText, difficulty || 'beginner', 'pdf', file.name);
 
 	return json({ id });
 };

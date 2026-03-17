@@ -1,12 +1,15 @@
-import { readFileSync, readdirSync, existsSync } from 'fs';
-import { resolve, basename } from 'path';
+import { basename } from 'path';
 import matter from 'gray-matter';
 import { nanoid } from 'nanoid';
 import { db } from './db.js';
 import { problems } from './schema.js';
 import { eq } from 'drizzle-orm';
 
-const CONTENT_DIR = resolve('content/problems');
+const markdownModules = import.meta.glob('/content/problems/*.md', {
+	query: '?raw',
+	import: 'default',
+	eager: true
+}) as Record<string, string>;
 
 const DEFAULT_STARTER_CODE = `#include <iostream>
 using namespace std;
@@ -86,14 +89,12 @@ export function normalizeMarkdown(filename: string, rawContent: string): string 
 }
 
 export async function syncMarkdownFiles() {
-	if (!existsSync(CONTENT_DIR)) return;
+	const entries = Object.entries(markdownModules);
+	if (entries.length === 0) return;
 
-	const files = readdirSync(CONTENT_DIR).filter((f) => f.endsWith('.md'));
-
-	for (const file of files) {
+	for (const [path, raw] of entries) {
+		const file = basename(path);
 		const slug = basename(file, '.md');
-		const filePath = resolve(CONTENT_DIR, file);
-		const raw = readFileSync(filePath, 'utf-8');
 		const normalized = normalizeMarkdown(file, raw);
 
 		const { data, content } = matter(normalized);

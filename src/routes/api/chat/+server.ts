@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		return new Response(JSON.stringify({ error: 'Not logged in' }), { status: 401 });
 	}
 
-	const { problemId, message, currentCode } = await request.json();
+	const { problemId, message, currentCode, executionResult } = await request.json();
 	if (!problemId || !message) {
 		return new Response(JSON.stringify({ error: 'Missing fields' }), { status: 400 });
 	}
@@ -87,7 +87,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 					currentCode: currentCode ?? '',
 					hintsUsed,
 					conversationHistory: history,
-					userMessage: message
+					userMessage: message,
+					executionResult: executionResult ?? undefined
 				})) {
 					fullResponse += chunk;
 					controller.enqueue(new TextEncoder().encode(chunk));

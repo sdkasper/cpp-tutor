@@ -14,6 +14,7 @@ A SvelteKit web app where students solve C++ programming problems with AI guidan
 ## Features
 
 - **Socratic AI Tutor** — Claude guides students with questions and progressive hints (4 levels), never giving direct solutions
+- **Code Execution** — Run C++ code in the browser via Wandbox (GCC 12.3), with stdin support, output panel, and F5 shortcut
 - **Browser Code Editor** — CodeMirror 6 with C++ syntax highlighting, line numbers, and font size controls
 - **16 Problems** — 5 English introductory problems (Hello World → Arrays) and 11 Romanian competitive programming problems
 - **Progress Tracking** — Per-student stats, completion tracking, and automatic solve detection
@@ -83,6 +84,7 @@ The filename becomes the URL slug (e.g., `01-hello-world.md` → `/tutor/01-hell
 | `/tutor/[problemId]` | Three-panel view: problem description, code editor, AI chat |
 | `/progress` | Student stats dashboard |
 | `/admin` | Content management (sync/upload) |
+| `api/execute` | POST — compile and run C++ code via Wandbox |
 
 ## License
 

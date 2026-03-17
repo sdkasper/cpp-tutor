@@ -2,15 +2,24 @@
 	import { tick, untrack } from 'svelte';
 	import ChatMessage from './ChatMessage.svelte';
 
+	interface ExecutionResult {
+		stdout: string;
+		stderr: string;
+		compile_output: string;
+		status: string;
+		exit_code: number;
+	}
+
 	interface Props {
 		problemId: string;
 		currentCode: string;
 		initialMessages: { role: string; content: string }[];
 		onSolved: () => void;
 		checkRequested?: boolean;
+		executionResult?: ExecutionResult | null;
 	}
 
-	let { problemId, currentCode, initialMessages, onSolved, checkRequested = $bindable(false) }: Props = $props();
+	let { problemId, currentCode, initialMessages, onSolved, checkRequested = $bindable(false), executionResult = null }: Props = $props();
 
 	let chatMessages = $state<{ role: string; content: string }[]>([...initialMessages]);
 	let input = $state('');
@@ -59,7 +68,7 @@ ${currentCode}
 			const res = await fetch('/api/chat', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ problemId, message: msg, currentCode })
+				body: JSON.stringify({ problemId, message: msg, currentCode, executionResult })
 			});
 
 			if (!res.ok || !res.body) {
@@ -120,7 +129,7 @@ ${currentCode}
 			const res = await fetch('/api/chat', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ problemId, message: msg, currentCode })
+				body: JSON.stringify({ problemId, message: msg, currentCode, executionResult })
 			});
 
 			if (!res.ok || !res.body) {

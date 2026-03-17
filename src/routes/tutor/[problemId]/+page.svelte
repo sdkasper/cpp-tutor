@@ -2,6 +2,7 @@
 	import type { PageData } from './$types';
 	import CodeEditor from '$lib/components/CodeEditor.svelte';
 	import ChatPanel from '$lib/components/ChatPanel.svelte';
+	import OutputPanel from '$lib/components/OutputPanel.svelte';
 	import { renderMarkdown } from '$lib/utils/markdown';
 	import { onMount } from 'svelte';
 
@@ -18,7 +19,66 @@
 	let fullscreen = $state(false);
 	let fontSize = $state(14);
 
+	// Execution state
+	let isRunning = $state(false);
+	let executionResult = $state<{
+		stdout: string;
+		stderr: string;
+		compile_output: string;
+		status: 'success' | 'compile_error' | 'runtime_error' | 'timeout' | 'error';
+		exit_code: number;
+	} | null>(null);
+	let stdinInput = $state('');
+	let showStdin = $state(false);
+	let showOutput = $state(false);
+
 	let descriptionHtml = $derived(renderMarkdown(data.problem.description));
+
+	async function runCode() {
+		if (isRunning) return;
+		isRunning = true;
+		showOutput = true;
+		executionResult = null;
+
+		try {
+			const res = await fetch('/api/execute', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					code: currentCode,
+					stdin: stdinInput,
+					problemId: data.problem.id
+				})
+			});
+
+			if (res.ok) {
+				executionResult = await res.json();
+			} else {
+				const err = await res.json().catch(() => ({ error: 'Execution failed' }));
+				executionResult = {
+					stdout: '',
+					stderr: '',
+					compile_output: err.error || 'Execution failed',
+					status: 'error',
+					exit_code: -1
+				};
+			}
+		} catch {
+			executionResult = {
+				stdout: '',
+				stderr: '',
+				compile_output: 'Network error — could not reach the execution service.',
+				status: 'error',
+				exit_code: -1
+			};
+		}
+		isRunning = false;
+	}
+
+	function clearOutput() {
+		executionResult = null;
+		showOutput = false;
+	}
 
 	// Load font size from localStorage
 	onMount(() => {
@@ -32,6 +92,10 @@
 			if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
 				e.preventDefault();
 				checkRequested = true;
+			}
+			if (e.key === 'F5') {
+				e.preventDefault();
+				runCode();
 			}
 		}
 		window.addEventListener('keydown', handleKeydown);
@@ -141,7 +205,9 @@
 					</svg>
 				{/if}
 			</button>
-			<span class="text-xs text-slate-500" title="Ctrl+Enter to check code">
+			<span class="text-xs text-slate-500" title="Keyboard shortcuts">
+				<kbd class="px-1 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">F5</kbd> Run
+				<span class="mx-1">|</span>
 				<kbd class="px-1 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">Ctrl</kbd>+<kbd class="px-1 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">Enter</kbd> Check
 			</span>
 		</div>
@@ -238,17 +304,49 @@
 					</button>
 					<span class="text-white/10">|</span>
 					<button
+						onclick={runCode}
+						disabled={isRunning}
+						class="text-white text-xs font-medium px-3 py-1 rounded-md transition-colors disabled:opacity-50"
+						style="background: var(--color-primary);"
+						title="Run code (F5)"
+					>
+						{isRunning ? 'Running...' : 'Run'}
+					</button>
+					<button
 						onclick={() => { checkRequested = true; }}
 						class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium px-3 py-1 rounded-md transition-colors"
 					>
 						Check
 					</button>
+					<button
+						onclick={() => { showStdin = !showStdin; }}
+						class="text-xs px-2 py-1 rounded transition-colors {showStdin ? 'text-white bg-white/10' : 'text-slate-400 hover:text-white'}"
+						title="Toggle stdin input"
+					>
+						Input
+					</button>
 					<span class="text-xs text-slate-500">C++</span>
 				</div>
 			</div>
-			<div class="flex-1 min-h-0">
+			{#if showStdin}
+				<div class="border-b px-3 py-2 shrink-0" style="border-color: var(--border-color);">
+					<textarea
+						bind:value={stdinInput}
+						placeholder="Program input (stdin)..."
+						rows="3"
+						class="w-full border rounded px-2 py-1 text-xs resize-none focus:outline-none focus:border-blue-500"
+						style="background: var(--color-surface); border-color: var(--border-color); color: var(--color-text); font-family: 'JetBrains Mono', monospace;"
+					></textarea>
+				</div>
+			{/if}
+			<div class="{showOutput ? 'h-[65%]' : 'flex-1'} min-h-0">
 				<CodeEditor bind:code={currentCode} {fontSize} />
 			</div>
+			{#if showOutput}
+				<div class="h-[35%] min-h-0">
+					<OutputPanel result={executionResult} {isRunning} onClear={clearOutput} />
+				</div>
+			{/if}
 		</div>
 
 		<!-- Chat panel -->
@@ -263,6 +361,7 @@
 				initialMessages={data.chatHistory}
 				onSolved={handleSolved}
 				bind:checkRequested
+				{executionResult}
 			/>
 		</div>
 	</div>

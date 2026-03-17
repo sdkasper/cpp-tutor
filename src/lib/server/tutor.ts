@@ -35,6 +35,14 @@ Use the hint count to calibrate your help level. More hints used = be slightly m
 
 Think of yourself as a cool older sibling who happens to be great at programming. Be warm, use casual language, and make coding feel fun — not intimidating.`;
 
+export interface ExecutionResult {
+	stdout: string;
+	stderr: string;
+	compile_output: string;
+	status: string;
+	exit_code: number;
+}
+
 export interface TutorContext {
 	problemTitle: string;
 	problemDescription: string;
@@ -44,10 +52,11 @@ export interface TutorContext {
 	hintsUsed: number;
 	conversationHistory: { role: 'user' | 'assistant'; content: string }[];
 	userMessage: string;
+	executionResult?: ExecutionResult;
 }
 
 export async function* streamTutorResponse(ctx: TutorContext) {
-	const contextMessage = `## Current Problem: ${ctx.problemTitle} (${ctx.difficulty})
+	let contextMessage = `## Current Problem: ${ctx.problemTitle} (${ctx.difficulty})
 
 ${ctx.problemDescription}
 
@@ -62,6 +71,14 @@ ${ctx.currentCode}
 \`\`\`
 
 ## Hints Used So Far: ${ctx.hintsUsed}`;
+
+	if (ctx.executionResult) {
+		const er = ctx.executionResult;
+		contextMessage += `\n\n## Latest Execution Result\nStatus: ${er.status}`;
+		if (er.compile_output) contextMessage += `\nCompile Output:\n\`\`\`\n${er.compile_output}\n\`\`\``;
+		if (er.stdout) contextMessage += `\nProgram Output:\n\`\`\`\n${er.stdout}\n\`\`\``;
+		if (er.stderr) contextMessage += `\nStderr:\n\`\`\`\n${er.stderr}\n\`\`\``;
+	}
 
 	const messages: { role: 'user' | 'assistant'; content: string }[] = [
 		{ role: 'user', content: contextMessage },

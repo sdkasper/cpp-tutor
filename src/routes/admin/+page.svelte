@@ -67,7 +67,11 @@
 	}
 </script>
 
-<div class="mx-auto max-w-2xl px-4 py-8">
+<svelte:head>
+	<title>Admin | C++ Tutor</title>
+</svelte:head>
+
+<div class="mx-auto max-w-2xl px-4 py-8 page-fade-in">
 	<h1 class="text-3xl font-bold text-white mb-8">Admin</h1>
 
 	{#if message}

@@ -3,6 +3,7 @@
 
 	let { data }: { data: PageData } = $props();
 
+
 	let name = $state('');
 	let existingStudents = $state(data.students);
 	let loading = $state(false);
@@ -39,7 +40,11 @@
 	}
 </script>
 
-<div class="mx-auto max-w-lg px-4 py-16">
+<svelte:head>
+	<title>Welcome | C++ Tutor</title>
+</svelte:head>
+
+<div class="mx-auto max-w-lg px-4 py-16 page-fade-in">
 	<div class="text-center mb-12">
 		<h1 class="text-4xl font-bold text-white mb-3">Welcome to C++ Tutor</h1>
 		<p class="text-slate-400 text-lg">Learn C++ with a friendly AI tutor that guides you — not gives you answers.</p>

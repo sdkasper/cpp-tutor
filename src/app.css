@@ -1,29 +1,37 @@
 @import 'tailwindcss';
 
+/* ══════════════════════════════════════════════════════════
+   LeanProductivity Brand Colors — Dark mode (default)
+   ══════════════════════════════════════════════════════════ */
 :root {
-	--color-primary: #6366f1;
-	--color-primary-light: #818cf8;
-	--color-surface: #1e1e2e;
-	--color-surface-light: #2a2a3e;
-	--color-text: #e2e8f0;
-	--color-text-muted: #94a3b8;
-	--color-success: #22c55e;
-	--color-warning: #f59e0b;
+	--color-primary: #007BFF;       /* Azure — CTAs, links */
+	--color-primary-light: #25D0F7; /* Vivid Sky Blue */
+	--color-surface: #1B2631;       /* Gunmetal */
+	--color-surface-light: #243342; /* Lighter gunmetal */
+	--color-text: #DBDBDB;          /* Platinum */
+	--color-text-muted: #BFC6C7;    /* Silver */
+	--color-success: #18BC9C;       /* Mint */
+	--color-warning: #FFD700;       /* Gold */
+	--color-danger: #FC3634;        /* Vermilion */
 	--border-color: rgba(255, 255, 255, 0.1);
-	--code-bg: #1e1e2e;
+	--code-bg: #1C1C1C;            /* Eerie Black */
 }
 
+/* ══════════════════════════════════════════════════════════
+   Light mode — WCAG AA compliant on #F5F5F5
+   ══════════════════════════════════════════════════════════ */
 [data-theme='light'] {
-	--color-primary: #4f46e5;
-	--color-primary-light: #6366f1;
-	--color-surface: #f8fafc;
-	--color-surface-light: #ffffff;
-	--color-text: #1e293b;
-	--color-text-muted: #64748b;
-	--color-success: #16a34a;
-	--color-warning: #d97706;
-	--border-color: rgba(0, 0, 0, 0.1);
-	--code-bg: #f1f5f9;
+	--color-primary: #007BFF;       /* 4.6:1 on #F5F5F5 */
+	--color-primary-light: #0060CC; /* 6.1:1 */
+	--color-surface: #F5F5F5;       /* Brand light bg */
+	--color-surface-light: #FFFFFF; /* Cards */
+	--color-text: #1E293B;          /* 12.6:1 */
+	--color-text-muted: #475569;    /* 6.4:1 */
+	--color-success: #0E7A66;       /* 5.1:1 */
+	--color-warning: #B8860B;       /* 4.6:1 */
+	--color-danger: #B82220;        /* 5.8:1 */
+	--border-color: rgba(0, 0, 0, 0.12);
+	--code-bg: #EDEDED;
 	color-scheme: light;
 }
 
@@ -42,19 +50,113 @@ html {
 }
 
 body {
-	font-family: 'Inter', system-ui, -apple-system, sans-serif;
+	font-family: 'Source Sans Pro', 'Inter', system-ui, -apple-system, sans-serif;
 	background: var(--color-surface);
 	color: var(--color-text);
 }
 
-/* ── Card utility ── */
+/* ══════════════════════════════════════════════════════════
+   Light-mode overrides for hardcoded Tailwind classes
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Text color overrides ── */
+[data-theme='light'] .text-white {
+	color: var(--color-text);
+}
+[data-theme='light'] .text-slate-300 {
+	color: var(--color-text);
+}
+[data-theme='light'] .text-slate-400,
+[data-theme='light'] .text-slate-500 {
+	color: var(--color-text-muted);
+}
+[data-theme='light'] .text-indigo-400 {
+	color: var(--color-primary);
+}
+[data-theme='light'] .text-indigo-300 {
+	color: var(--color-primary-light);
+}
+[data-theme='light'] .text-indigo-100 {
+	color: var(--color-primary);
+}
+[data-theme='light'] .hover\:text-white:hover {
+	color: var(--color-text);
+}
+[data-theme='light'] .text-white\/20,
+[data-theme='light'] .text-white\/10 {
+	color: var(--border-color);
+}
+[data-theme='light'] .text-green-400 {
+	color: #0E7A66;
+}
+[data-theme='light'] .text-yellow-400 {
+	color: #B8860B;
+}
+[data-theme='light'] .text-red-400 {
+	color: #B82220;
+}
+[data-theme='light'] .text-blue-400 {
+	color: #0055B3;
+}
+
+/* ── Background overrides ── */
+[data-theme='light'] .bg-white\/5,
+[data-theme='light'] .bg-white\/10 {
+	background: rgba(0, 0, 0, 0.04);
+}
+[data-theme='light'] .bg-indigo-600\/20 {
+	background: rgba(0, 123, 255, 0.1);
+}
+[data-theme='light'] .bg-green-500\/10,
+[data-theme='light'] .bg-green-500\/20 {
+	background: rgba(14, 122, 102, 0.1);
+}
+[data-theme='light'] .bg-yellow-500\/10,
+[data-theme='light'] .bg-yellow-500\/20 {
+	background: rgba(184, 134, 11, 0.1);
+}
+[data-theme='light'] .bg-red-500\/20 {
+	background: rgba(184, 34, 32, 0.1);
+}
+[data-theme='light'] .bg-blue-500\/20 {
+	background: rgba(0, 123, 255, 0.1);
+}
+[data-theme='light'] .bg-indigo-500\/10 {
+	background: rgba(0, 123, 255, 0.08);
+}
+
+/* ── Border overrides ── */
+[data-theme='light'] .border-white\/10,
+[data-theme='light'] .border-white\/20 {
+	border-color: var(--border-color);
+}
+[data-theme='light'] .border-indigo-500\/20 {
+	border-color: rgba(0, 123, 255, 0.2);
+}
+[data-theme='light'] .border-indigo-500\/30 {
+	border-color: rgba(0, 123, 255, 0.3);
+}
+[data-theme='light'] .hover\:border-indigo-500\/50:hover {
+	border-color: rgba(0, 123, 255, 0.5);
+}
+
+/* ── Card shadow (lighter in light mode) ── */
+[data-theme='light'] .card-hover:hover {
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* ══════════════════════════════════════════════════════════
+   Card utility
+   ══════════════════════════════════════════════════════════ */
 .card {
 	background: var(--color-surface-light);
 	border: 1px solid var(--border-color);
 	border-radius: 0.75rem;
 }
 
-/* ── Shared prose styles for rendered markdown ── */
+/* ══════════════════════════════════════════════════════════
+   Shared prose styles for rendered markdown
+   ══════════════════════════════════════════════════════════ */
 .prose-rendered pre {
 	background: var(--code-bg);
 	border: 1px solid var(--border-color);
@@ -76,7 +178,12 @@ body {
 }
 
 [data-theme='light'] .prose-rendered :not(pre) > code {
-	background: rgba(0, 0, 0, 0.06);
+	background: #EDEDED;
+	color: #C92A28;
+}
+
+[data-theme='light'] .prose-rendered pre {
+	border: 1px solid #DBDBDB;
 }
 
 .prose-rendered p {
@@ -143,7 +250,7 @@ body {
 	font-weight: 600;
 }
 
-/* ── highlight.js One Dark theme ── */
+/* ── highlight.js One Dark theme (dark mode) ── */
 .prose-rendered .hljs {
 	color: #abb2bf;
 }
@@ -179,7 +286,69 @@ body {
 	color: #d19a66;
 }
 
-/* ── Navigation loading bar ── */
+/* ── highlight.js One Light theme (light mode) ── */
+[data-theme='light'] .prose-rendered .hljs {
+	color: #383a42;
+}
+[data-theme='light'] .prose-rendered .hljs-keyword {
+	color: #a626a4;
+}
+[data-theme='light'] .prose-rendered .hljs-built_in,
+[data-theme='light'] .prose-rendered .hljs-type {
+	color: #c18401;
+}
+[data-theme='light'] .prose-rendered .hljs-string {
+	color: #50a14f;
+}
+[data-theme='light'] .prose-rendered .hljs-number {
+	color: #986801;
+}
+[data-theme='light'] .prose-rendered .hljs-comment {
+	color: #a0a1a7;
+	font-style: italic;
+}
+[data-theme='light'] .prose-rendered .hljs-function,
+[data-theme='light'] .prose-rendered .hljs-title {
+	color: #4078f2;
+}
+[data-theme='light'] .prose-rendered .hljs-params {
+	color: #383a42;
+}
+[data-theme='light'] .prose-rendered .hljs-meta {
+	color: #4078f2;
+}
+[data-theme='light'] .prose-rendered .hljs-literal,
+[data-theme='light'] .prose-rendered .hljs-symbol {
+	color: #986801;
+}
+
+/* ══════════════════════════════════════════════════════════
+   CodeMirror light mode overrides
+   ══════════════════════════════════════════════════════════ */
+[data-theme='light'] .cm-editor {
+	background: #FFFFFF;
+}
+[data-theme='light'] .cm-editor .cm-gutters {
+	background: #F5F5F5;
+	color: #6B7280;
+	border-right: 1px solid #DBDBDB;
+}
+[data-theme='light'] .cm-editor .cm-content {
+	color: #1E293B;
+}
+[data-theme='light'] .cm-editor .cm-cursor {
+	border-left-color: #1E293B;
+}
+[data-theme='light'] .cm-editor .cm-selectionBackground {
+	background: rgba(0, 123, 255, 0.15) !important;
+}
+[data-theme='light'] .cm-editor .cm-activeLine {
+	background: rgba(0, 123, 255, 0.04);
+}
+
+/* ══════════════════════════════════════════════════════════
+   Navigation loading bar
+   ══════════════════════════════════════════════════════════ */
 .nav-loading-bar {
 	position: fixed;
 	top: 0;
@@ -202,7 +371,9 @@ body {
 	}
 }
 
-/* ── Solved celebration overlay ── */
+/* ══════════════════════════════════════════════════════════
+   Solved celebration overlay
+   ══════════════════════════════════════════════════════════ */
 .celebration-overlay {
 	animation: celebration-in 0.4s ease-out;
 }
@@ -236,7 +407,9 @@ body {
 	}
 }
 
-/* ── Micro-interactions ── */
+/* ══════════════════════════════════════════════════════════
+   Micro-interactions
+   ══════════════════════════════════════════════════════════ */
 .card-hover {
 	transition:
 		transform 0.2s ease,

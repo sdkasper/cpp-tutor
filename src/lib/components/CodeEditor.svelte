@@ -21,7 +21,7 @@
 			'&': { height: '100%', fontSize: `${size}px` },
 			'.cm-scroller': { overflow: 'auto', fontFamily: "'JetBrains Mono', monospace" },
 			'.cm-content': { padding: '12px 0' },
-			'.cm-gutters': { borderRight: '1px solid rgba(255,255,255,0.1)', fontFamily: "'JetBrains Mono', monospace" }
+			'.cm-gutters': { borderRight: '1px solid var(--border-color)', fontFamily: "'JetBrains Mono', monospace" }
 		});
 	}
 

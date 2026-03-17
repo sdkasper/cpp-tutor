@@ -7,8 +7,10 @@ let _db: LibSQLDatabase<typeof schema> | null = null;
 
 function getClient(): Client {
 	if (!_client) {
+		const url = (process.env.TURSO_DATABASE_URL ?? 'file:data/cpp-tutor.db').trim();
+		console.log(`Creating Turso client: ${url.replace(/(:\/\/.{4}).*(@)/, '$1***$2')}`);
 		_client = createClient({
-			url: (process.env.TURSO_DATABASE_URL ?? 'file:data/cpp-tutor.db').trim(),
+			url,
 			authToken: process.env.TURSO_AUTH_TOKEN?.trim()
 		});
 	}

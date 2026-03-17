@@ -1,16 +1,36 @@
-import { createClient } from '@libsql/client';
-import { drizzle } from 'drizzle-orm/libsql';
+import { createClient, type Client } from '@libsql/client';
+import { drizzle, type LibSQLDatabase } from 'drizzle-orm/libsql';
 import * as schema from './schema.js';
 
-const client = createClient({
-	url: process.env.TURSO_DATABASE_URL ?? 'file:data/cpp-tutor.db',
-	authToken: process.env.TURSO_AUTH_TOKEN
+let _client: Client | null = null;
+let _db: LibSQLDatabase<typeof schema> | null = null;
+
+function getClient(): Client {
+	if (!_client) {
+		_client = createClient({
+			url: (process.env.TURSO_DATABASE_URL ?? 'file:data/cpp-tutor.db').trim(),
+			authToken: process.env.TURSO_AUTH_TOKEN?.trim()
+		});
+	}
+	return _client;
+}
+
+export function getDb(): LibSQLDatabase<typeof schema> {
+	if (!_db) {
+		_db = drizzle(getClient(), { schema });
+	}
+	return _db;
+}
+
+// Keep backward-compatible export that lazily initializes
+export const db = new Proxy({} as LibSQLDatabase<typeof schema>, {
+	get(_target, prop) {
+		return (getDb() as any)[prop];
+	}
 });
 
-export const db = drizzle(client, { schema });
-
 export async function initDb() {
-	await client.executeMultiple(`
+	await getClient().executeMultiple(`
 		CREATE TABLE IF NOT EXISTS students (
 			id TEXT PRIMARY KEY,
 			name TEXT NOT NULL UNIQUE,

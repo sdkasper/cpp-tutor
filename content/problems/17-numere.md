@@ -2,6 +2,7 @@
 title: Numere
 difficulty: hard
 sort_order: 17
+concepts: [loops, arithmetic, modulo, file-io]
 hints:
   - >-
     Începe prin a identifica toate prefixele valide de 3 cifre. Care sunt

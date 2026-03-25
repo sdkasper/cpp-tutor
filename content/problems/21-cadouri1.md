@@ -2,6 +2,7 @@
 title: Cadouri 1
 difficulty: medium
 sort_order: 21
+concepts: [arrays, loops, conditions, file-io]
 hints:
   - >-
     Cutiile se împart în ordine, consecutiv. Dacă fiecare copil primește exact

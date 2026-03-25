@@ -2,6 +2,7 @@
 title: Legos
 difficulty: medium
 sort_order: 11
+concepts: [loops, arithmetic, conditions, file-io]
 hints:
   - >-
     Pentru cerința 1, o fundație este un pătrat cu latura cel puțin 3. Trebuie

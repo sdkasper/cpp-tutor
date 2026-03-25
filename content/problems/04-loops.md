@@ -2,6 +2,7 @@
 title: FizzBuzz
 difficulty: easy
 sort_order: 4
+concepts: [loops, for-loop, conditions, modulo]
 hints:
   - >-
     You need a loop that counts from 1 to a number. A for-loop is perfect for

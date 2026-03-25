@@ -2,6 +2,7 @@
 title: Tăieri
 difficulty: hard
 sort_order: 12
+concepts: [arrays, loops, for-loop, file-io]
 hints:
   - >-
     Gândește-te greedy: e mai eficient să tai barele pornind de la lungimea cea

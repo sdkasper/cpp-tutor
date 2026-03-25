@@ -2,6 +2,7 @@
 title: Find the Maximum
 difficulty: medium
 sort_order: 5
+concepts: [arrays, loops, for-loop, indexing]
 hints:
   - >-
     First, you need to store the numbers somewhere. An array or vector would

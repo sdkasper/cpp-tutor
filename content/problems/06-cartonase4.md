@@ -2,6 +2,7 @@
 title: Cartonașe 4
 difficulty: hard
 sort_order: 6
+concepts: [arrays, loops, for-loop, file-io]
 hints:
   - >-
     Gândește-te cum poți verifica eficient dacă primele p cartonașe conțin toate

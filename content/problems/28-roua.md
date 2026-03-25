@@ -2,6 +2,7 @@
 title: Roua
 difficulty: hard
 sort_order: 28
+concepts: [2d-arrays, loops, nested-loops, conditions, file-io]
 hints:
   - >-
     O secvență „roua" de lungime R conține exact R-1 caractere 'r' și exact

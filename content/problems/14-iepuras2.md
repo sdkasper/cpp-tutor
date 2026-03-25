@@ -2,6 +2,7 @@
 title: Iepuraș 2
 difficulty: hard
 sort_order: 14
+concepts: [loops, conditions, arithmetic, file-io]
 hints:
   - >-
     Pentru cerința 1, extrage cifrele distincte ale numărului. Cel mai mare

@@ -2,6 +2,7 @@
 title: Variables and Types
 difficulty: beginner
 sort_order: 2
+concepts: [variables, int, double, string]
 hints:
   - >-
     Think about what type of data each variable should hold — a whole number? A

@@ -2,6 +2,7 @@
 title: Perechi 4
 difficulty: medium
 sort_order: 18
+concepts: [arrays, loops, nested-loops, file-io]
 hints:
   - >-
     Gândește-te la resturile împărțirii la K. Dacă un element are restul r,

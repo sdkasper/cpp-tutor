@@ -2,6 +2,7 @@
 title: Patinaj
 difficulty: hard
 sort_order: 13
+concepts: [2d-arrays, loops, nested-loops, file-io]
 hints:
   - >-
     Primul pas: calculează valoarea fiecărui antrenor, fete și băiat ca suma

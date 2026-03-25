@@ -2,6 +2,7 @@
 title: Mostenire
 difficulty: hard
 sort_order: 24
+concepts: [arrays, loops, arithmetic, file-io]
 hints:
   - >-
     Codul cheie Q definește o substituție: cifra 1 devine Q[1], cifra 2 devine

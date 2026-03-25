@@ -17,6 +17,7 @@ export interface Problem {
 	source_type: 'markdown' | 'pdf' | 'url';
 	source_ref: string;
 	sort_order: number;
+	concepts: string[];
 }
 
 export interface StudentProgress {
@@ -42,4 +43,25 @@ export interface Message {
 	role: 'user' | 'assistant';
 	content: string;
 	created_at: string;
+}
+
+export interface Lesson {
+	id: string;
+	slug: string;
+	title: string;
+	sort_order: number;
+	concepts: string[];
+	summary: string;
+	estimated_minutes: number;
+	content: string;
+	prev_lesson: string | null;
+	next_lesson: string | null;
+}
+
+export interface LessonProgress {
+	student_id: string;
+	lesson_id: string;
+	status: 'not_started' | 'in_progress' | 'completed';
+	started_at: string | null;
+	completed_at: string | null;
 }

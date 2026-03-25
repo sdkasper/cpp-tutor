@@ -2,6 +2,7 @@
 title: Grade Calculator
 difficulty: easy
 sort_order: 3
+concepts: [if-else, conditions, input, cin]
 hints:
   - >-
     You'll need to check the score against multiple thresholds. Start with the

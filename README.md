@@ -13,11 +13,13 @@ A SvelteKit web app where students solve C++ programming problems with AI guidan
 
 ## Features
 
+- **Interactive Learn Section** — 16 structured lessons teaching C++ from scratch (output → file I/O), each with runnable code examples and "Try it yourself" exercises
+- **Concept-Based Linking** — Lessons and problems are tagged with concepts; the app dynamically links "Practice these problems" at the end of each lesson
 - **Socratic AI Tutor** — Claude guides students with questions and progressive hints (4 levels), never giving direct solutions
 - **Code Execution** — Run C++ code in the browser via Wandbox (GCC 12.3), with stdin support, output panel, and F5 shortcut
 - **Browser Code Editor** — CodeMirror 6 with C++ syntax highlighting, line numbers, and font size controls
-- **16 Problems** — 5 English introductory problems (Hello World → Arrays) and 11 Romanian competitive programming problems
-- **Progress Tracking** — Per-student stats, completion tracking, and automatic solve detection
+- **28 Problems** — 5 English introductory problems (Hello World → Arrays) and 23 Romanian competitive programming problems
+- **Progress Tracking** — Per-student stats, lesson completion, problem tracking, and automatic solve detection
 - **Dark/Light Theme** — LeanProductivity-branded color palette with WCAG AA contrast compliance
 - **Bilingual Support** — Tutor auto-detects language from the problem description and responds accordingly
 - **Admin Panel** — Sync bundled content or upload new `.md`/`.pdf` problems at runtime
@@ -80,6 +82,8 @@ The filename becomes the URL slug (e.g., `01-hello-world.md` → `/tutor/01-hell
 | Route | Purpose |
 |-------|---------|
 | `/` | Student selection and creation |
+| `/learn` | Lesson curriculum with progress tracking |
+| `/learn/[lessonSlug]` | Interactive lesson with runnable examples and exercises |
 | `/problems` | Problem list with difficulty badges and progress |
 | `/tutor/[problemId]` | Three-panel view: problem description, code editor, AI chat |
 | `/progress` | Student stats dashboard |

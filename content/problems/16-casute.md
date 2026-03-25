@@ -2,6 +2,7 @@
 title: Căsuțe
 difficulty: hard
 sort_order: 16
+concepts: [arrays, loops, conditions, file-io]
 hints:
   - >-
     Nu poți crea un vector de N elemente dacă N poate fi până la 1 miliard!

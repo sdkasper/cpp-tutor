@@ -2,6 +2,7 @@
 title: Robin Hood
 difficulty: medium
 sort_order: 19
+concepts: [arrays, loops, conditions, arithmetic, file-io]
 hints:
   - >-
     Simulează mișcarea fiecărui arcaș. Robin pleacă de la ținta 1 spre n,

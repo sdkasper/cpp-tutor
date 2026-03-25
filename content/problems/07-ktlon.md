@@ -2,6 +2,7 @@
 title: Ktlon
 difficulty: medium
 sort_order: 7
+concepts: [arrays, loops, for-loop, file-io, conditions]
 hints:
   - >-
     Gândește-te cum poți determina câștigătorul unei probe. Ce condiție trebuie

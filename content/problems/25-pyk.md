@@ -2,6 +2,7 @@
 title: PYK
 difficulty: hard
 sort_order: 25
+concepts: [strings, loops, conditions, file-io]
 hints:
   - >-
     Pentru cerința 1, un număr este format doar din cifre identice dacă toate

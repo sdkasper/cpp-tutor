@@ -2,6 +2,7 @@
 title: Robot 4
 difficulty: medium
 sort_order: 26
+concepts: [2d-arrays, loops, conditions, file-io]
 hints:
   - >-
     O etichetă este corectă dacă are și cifre pare și cifre impare, iar cifrele

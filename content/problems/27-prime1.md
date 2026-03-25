@@ -2,6 +2,7 @@
 title: Prime 1
 difficulty: hard
 sort_order: 27
+concepts: [loops, arithmetic, modulo, conditions, file-io]
 hints:
   - >-
     Pentru cerința 1, trebuie să verifici dacă un număr este și prim și aparține

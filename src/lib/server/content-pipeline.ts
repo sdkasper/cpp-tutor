@@ -27,6 +27,7 @@ interface ProblemFrontmatter {
 	starter_code: string;
 	solution_notes: string;
 	sort_order: number;
+	concepts: string[];
 }
 
 function titleFromFilename(filename: string): string {
@@ -82,6 +83,9 @@ export function normalizeMarkdown(filename: string, rawContent: string): string 
 	if (fm.sort_order === undefined || fm.sort_order === null) {
 		fm.sort_order = 0;
 	}
+	if (!Array.isArray(fm.concepts)) {
+		fm.concepts = [];
+	}
 
 	const body = parsed.content.trim();
 	const normalized = matter.stringify(body ? body + '\n' : '', fm);
@@ -112,7 +116,8 @@ export async function syncMarkdownFiles() {
 			starter_code: fm.starter_code,
 			source_type: 'markdown' as const,
 			source_ref: file,
-			sort_order: fm.sort_order
+			sort_order: fm.sort_order,
+			concepts: JSON.stringify(fm.concepts)
 		};
 
 		if (existing) {

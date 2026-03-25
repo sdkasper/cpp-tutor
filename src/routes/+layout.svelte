@@ -40,6 +40,7 @@
 					&lt;C++ Tutor /&gt;
 				</a>
 				<div class="hidden sm:flex gap-4 text-sm">
+					<a href="/learn" class="{navClass('/learn')} transition-colors">Learn</a>
 					<a href="/problems" class="{navClass('/problems')} transition-colors">Problems</a>
 					<a href="/progress" class="{navClass('/progress')} transition-colors">Progress</a>
 					<a href="/admin" class="{navClass('/admin')} transition-colors">Admin</a>
@@ -79,6 +80,7 @@
 		</div>
 		{#if mobileMenuOpen}
 			<div class="sm:hidden border-t px-4 py-2 flex flex-col gap-1" style="border-color: var(--border-color);">
+				<a href="/learn" class="{navClass('/learn')} transition-colors py-2 text-sm" onclick={() => mobileMenuOpen = false}>Learn</a>
 				<a href="/problems" class="{navClass('/problems')} transition-colors py-2 text-sm" onclick={() => mobileMenuOpen = false}>Problems</a>
 				<a href="/progress" class="{navClass('/progress')} transition-colors py-2 text-sm" onclick={() => mobileMenuOpen = false}>Progress</a>
 				<a href="/admin" class="{navClass('/admin')} transition-colors py-2 text-sm" onclick={() => mobileMenuOpen = false}>Admin</a>

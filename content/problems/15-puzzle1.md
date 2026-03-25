@@ -2,6 +2,7 @@
 title: Puzzle 1
 difficulty: hard
 sort_order: 15
+concepts: [2d-arrays, loops, nested-loops, file-io]
 hints:
   - >-
     Două piese se pot lipi dacă au cel puțin 3 cifre comune. Gândește-te cum

@@ -2,6 +2,7 @@
 title: Copii 1
 difficulty: hard
 sort_order: 23
+concepts: [arrays, loops, conditions, file-io]
 hints:
   - >-
     Pentru cerința 1, trebuie să calculezi X! (factorial), să elimini zerourile

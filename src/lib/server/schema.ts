@@ -18,7 +18,30 @@ export const problems = sqliteTable('problems', {
 	starter_code: text('starter_code').notNull().default(''),
 	source_type: text('source_type').notNull().default('markdown'),
 	source_ref: text('source_ref').notNull().default(''),
-	sort_order: integer('sort_order').notNull().default(0)
+	sort_order: integer('sort_order').notNull().default(0),
+	concepts: text('concepts').notNull().default('[]')
+});
+
+export const lessons = sqliteTable('lessons', {
+	id: text('id').primaryKey(),
+	slug: text('slug').notNull().unique(),
+	title: text('title').notNull(),
+	sort_order: integer('sort_order').notNull().default(0),
+	concepts: text('concepts').notNull().default('[]'),
+	summary: text('summary').notNull().default(''),
+	estimated_minutes: integer('estimated_minutes').notNull().default(10),
+	content: text('content').notNull(),
+	prev_lesson: text('prev_lesson'),
+	next_lesson: text('next_lesson'),
+	source_ref: text('source_ref').notNull().default('')
+});
+
+export const lessonProgress = sqliteTable('lesson_progress', {
+	student_id: text('student_id').notNull().references(() => students.id),
+	lesson_id: text('lesson_id').notNull().references(() => lessons.id),
+	status: text('status').notNull().default('not_started'),
+	started_at: text('started_at'),
+	completed_at: text('completed_at')
 });
 
 export const studentProgress = sqliteTable('student_progress', {

@@ -2,6 +2,7 @@
 title: Trio
 difficulty: medium
 sort_order: 22
+concepts: [arrays, loops, nested-loops, file-io]
 hints:
   - >-
     Pentru a compara piese, codifică fiecare piesă. Două piese sunt identice

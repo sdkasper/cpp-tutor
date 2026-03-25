@@ -79,4 +79,8 @@ Filename becomes the slug (e.g., `01-hello-world.md` → slug `01-hello-world`).
 
 ## Bilingual Content
 
-The app has 6 English introductory problems and 10 Romanian competitive programming problems. The tutor auto-detects and responds in the problem's language.
+The app has 5 English introductory problems, 23 Romanian competitive programming problems, and 16 English interactive lessons. The tutor auto-detects and responds in the problem's language.
+
+## Learn Section
+
+Interactive lessons live in `content/lessons/*.md` with frontmatter fields: title, slug, sort_order, concepts, summary, estimated_minutes, prev_lesson, next_lesson. Lessons use `<!-- run -->` markers for runnable code examples and `<!-- exercise -->` / `<!-- /exercise -->` markers for try-it-yourself blocks. Both lessons and problems have `concepts` arrays that enable dynamic cross-linking.

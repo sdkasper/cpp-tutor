@@ -86,5 +86,35 @@ export async function initDb() {
 			auth_type TEXT NOT NULL,
 			credentials TEXT NOT NULL DEFAULT '{}'
 		);
+
+		CREATE TABLE IF NOT EXISTS lessons (
+			id TEXT PRIMARY KEY,
+			slug TEXT NOT NULL UNIQUE,
+			title TEXT NOT NULL,
+			sort_order INTEGER NOT NULL DEFAULT 0,
+			concepts TEXT NOT NULL DEFAULT '[]',
+			summary TEXT NOT NULL DEFAULT '',
+			estimated_minutes INTEGER NOT NULL DEFAULT 10,
+			content TEXT NOT NULL,
+			prev_lesson TEXT,
+			next_lesson TEXT,
+			source_ref TEXT NOT NULL DEFAULT ''
+		);
+
+		CREATE TABLE IF NOT EXISTS lesson_progress (
+			student_id TEXT NOT NULL REFERENCES students(id),
+			lesson_id TEXT NOT NULL REFERENCES lessons(id),
+			status TEXT NOT NULL DEFAULT 'not_started',
+			started_at TEXT,
+			completed_at TEXT,
+			PRIMARY KEY (student_id, lesson_id)
+		);
 	`);
+
+	// Add concepts column to problems if it doesn't exist (backward-compatible)
+	try {
+		await getClient().execute('ALTER TABLE problems ADD COLUMN concepts TEXT NOT NULL DEFAULT \'[]\'');
+	} catch {
+		// Column already exists, ignore
+	}
 }

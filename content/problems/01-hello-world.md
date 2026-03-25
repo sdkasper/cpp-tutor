@@ -2,6 +2,7 @@
 title: 'Hello, World!'
 difficulty: beginner
 sort_order: 1
+concepts: [output, cout, endl]
 hints:
   - Every C++ program needs a main() function — that's where it starts running.
   - 'To print text, use cout with the << operator.'

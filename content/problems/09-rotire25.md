@@ -2,6 +2,7 @@
 title: Rotire 25
 difficulty: medium
 sort_order: 9
+concepts: [loops, while-loop, modulo, file-io]
 hints:
   - >-
     Pentru cerința 1, nu trebuie să calculezi X^K complet. Gândește-te: ultima

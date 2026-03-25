@@ -2,6 +2,7 @@
 title: Culori 6
 difficulty: medium
 sort_order: 8
+concepts: [2d-arrays, loops, nested-loops, file-io, strings]
 hints:
   - >-
     Pentru cerința 1, gândește-te cum verifici dacă un rând are toate

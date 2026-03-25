@@ -18,6 +18,7 @@ export interface Problem {
 	source_ref: string;
 	sort_order: number;
 	concepts: string[];
+	lang: 'en' | 'ro';
 }
 
 export interface StudentProgress {
@@ -56,6 +57,7 @@ export interface Lesson {
 	content: string;
 	prev_lesson: string | null;
 	next_lesson: string | null;
+	lang: 'en' | 'ro';
 }
 
 export interface LessonProgress {

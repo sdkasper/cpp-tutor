@@ -1,21 +1,41 @@
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db.js';
 import { lessons, lessonProgress, problems } from '$lib/server/schema.js';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { error, redirect } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
 	const studentId = cookies.get('student_id');
 	if (!studentId) throw redirect(303, '/');
 
-	const lesson = await db.select().from(lessons).where(eq(lessons.slug, params.lessonSlug)).get();
+	const locale = (cookies.get('locale') as 'en' | 'ro') || 'en';
+
+	// Find lesson by slug + locale, fall back to English
+	let lesson = await db.select().from(lessons)
+		.where(and(eq(lessons.slug, params.lessonSlug), eq(lessons.lang, locale)))
+		.get();
+
+	if (!lesson) {
+		lesson = await db.select().from(lessons)
+			.where(and(eq(lessons.slug, params.lessonSlug), eq(lessons.lang, 'en')))
+			.get();
+	}
+
 	if (!lesson) throw error(404, 'Lesson not found');
 
 	const lessonConcepts = JSON.parse(lesson.concepts) as string[];
 
-	// Find matching problems by concept intersection
-	const allProblems = await db.select().from(problems).all();
-	const matchingProblems = allProblems
+	// Find matching problems by concept intersection, filtered by locale
+	const allProblems = await db.select().from(problems)
+		.where(eq(problems.lang, locale))
+		.all();
+
+	// Fall back to all problems if none for this locale
+	const problemPool = allProblems.length > 0
+		? allProblems
+		: await db.select().from(problems).where(eq(problems.lang, 'en')).all();
+
+	const matchingProblems = problemPool
 		.filter((p) => {
 			const problemConcepts = JSON.parse(p.concepts) as string[];
 			return problemConcepts.some((c) => lessonConcepts.includes(c));

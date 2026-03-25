@@ -2,6 +2,7 @@
 title: Căsuțe
 difficulty: hard
 sort_order: 16
+lang: ro
 concepts: [arrays, loops, conditions, file-io]
 hints:
   - >-

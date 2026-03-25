@@ -2,6 +2,7 @@
 title: Roua
 difficulty: hard
 sort_order: 28
+lang: ro
 concepts: [2d-arrays, loops, nested-loops, conditions, file-io]
 hints:
   - >-

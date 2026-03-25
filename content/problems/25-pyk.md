@@ -2,6 +2,7 @@
 title: PYK
 difficulty: hard
 sort_order: 25
+lang: ro
 concepts: [strings, loops, conditions, file-io]
 hints:
   - >-

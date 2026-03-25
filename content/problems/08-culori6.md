@@ -2,6 +2,7 @@
 title: Culori 6
 difficulty: medium
 sort_order: 8
+lang: ro
 concepts: [2d-arrays, loops, nested-loops, file-io, strings]
 hints:
   - >-

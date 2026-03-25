@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { t } from '$lib/i18n';
 
 	let { data }: { data: PageData } = $props();
 
@@ -33,12 +34,12 @@
 </script>
 
 <svelte:head>
-	<title>Learn C++ | C++ Tutor</title>
+	<title>{$t('learn.title')} | C++ Tutor</title>
 </svelte:head>
 
 <div class="mx-auto max-w-4xl px-4 py-8 page-fade-in">
-	<h1 class="text-3xl font-bold mb-2" style="color: var(--color-text);">Learn C++</h1>
-	<p class="text-slate-400 mb-6">Work through these lessons in order. Each one teaches a new concept with examples you can run and exercises to try.</p>
+	<h1 class="text-3xl font-bold mb-2" style="color: var(--color-text);">{$t('learn.title')}</h1>
+	<p class="text-slate-400 mb-6">{$t('learn.subtitle')}</p>
 
 	{#if continueLesson && data.lessons.length > 1}
 		<a
@@ -52,7 +53,7 @@
 			</div>
 			<div class="flex-1 min-w-0">
 				<span class="text-xs font-medium uppercase tracking-wider" style="color: var(--color-primary);">
-					{continueLesson.progress?.status === 'in_progress' ? 'Continue learning' : 'Start here'}
+					{continueLesson.progress?.status === 'in_progress' ? $t('learn.continueLearning') : $t('learn.startHere')}
 				</span>
 				<h2 class="text-base font-semibold group-hover:text-indigo-300 transition-colors" style="color: var(--color-text);">
 					{continueLesson.title}
@@ -66,8 +67,8 @@
 
 	{#if data.lessons.length === 0}
 		<div class="card p-12 text-center">
-			<p class="text-slate-400 text-lg mb-2">No lessons yet!</p>
-			<p class="text-slate-500 text-sm">Lessons will appear here once content is added to <code class="text-indigo-400">content/lessons/</code>.</p>
+			<p class="text-slate-400 text-lg mb-2">{$t('learn.noLessons')}</p>
+			<p class="text-slate-500 text-sm">{$t('learn.noLessonsHint')}</p>
 		</div>
 	{:else}
 		<div class="grid gap-3">
@@ -99,7 +100,7 @@
 									{lesson.title}
 								</h2>
 								<span class="text-xs shrink-0" style="color: var(--color-text-muted);">
-									~{lesson.estimated_minutes} min
+									{$t('learn.minutes', { min: String(lesson.estimated_minutes) })}
 								</span>
 							</div>
 							{#if lesson.summary}

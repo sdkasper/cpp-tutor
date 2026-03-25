@@ -2,6 +2,7 @@
 title: Trio
 difficulty: medium
 sort_order: 22
+lang: ro
 concepts: [arrays, loops, nested-loops, file-io]
 hints:
   - >-

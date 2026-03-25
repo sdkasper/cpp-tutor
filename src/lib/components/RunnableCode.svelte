@@ -1,6 +1,7 @@
 <script lang="ts">
 	import CodeEditor from './CodeEditor.svelte';
 	import OutputPanel from './OutputPanel.svelte';
+	import { t } from '$lib/i18n';
 
 	interface Props {
 		initialCode: string;
@@ -35,7 +36,7 @@
 		} catch {
 			result = {
 				stdout: '',
-				stderr: 'Failed to connect to execution server.',
+				stderr: 'Failed to connect to execution server.', // fallback, not i18n'd since it's data
 				compile_output: '',
 				status: 'error',
 				exit_code: 1
@@ -53,7 +54,7 @@
 
 <div class="runnable-code rounded-lg overflow-hidden border" style="border-color: var(--border-color);">
 	<div class="flex items-center justify-between px-3 py-1.5" style="background: var(--color-surface-raised); border-bottom: 1px solid var(--border-color);">
-		<span class="text-xs font-medium" style="color: var(--color-text-muted);">C++</span>
+		<span class="text-xs font-medium" style="color: var(--color-text-muted);">{$t('runnable.lang')}</span>
 		<div class="flex gap-2">
 			{#if !readOnly}
 				<button
@@ -61,7 +62,7 @@
 					class="text-xs px-2 py-0.5 rounded transition-colors hover:bg-white/10"
 					style="color: var(--color-text-muted);"
 				>
-					Reset
+					{$t('runnable.reset')}
 				</button>
 			{/if}
 			<button
@@ -69,7 +70,7 @@
 				disabled={isRunning}
 				class="text-xs px-3 py-0.5 rounded font-medium transition-colors bg-green-600 hover:bg-green-500 text-white disabled:opacity-50"
 			>
-				{isRunning ? 'Running...' : 'Run'}
+				{isRunning ? $t('runnable.running') : $t('runnable.run')}
 			</button>
 		</div>
 	</div>

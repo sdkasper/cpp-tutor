@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import LessonRenderer from '$lib/components/LessonRenderer.svelte';
+	import { t } from '$lib/i18n';
 
 	let { data }: { data: PageData } = $props();
 
@@ -26,23 +27,23 @@
 </script>
 
 <svelte:head>
-	<title>{data.lesson.title} | Learn C++ | C++ Tutor</title>
+	<title>{data.lesson.title} | {$t('learn.title')} | C++ Tutor</title>
 </svelte:head>
 
 <div class="mx-auto max-w-3xl px-4 py-8 page-fade-in">
 	<!-- Lesson header -->
 	<div class="mb-8">
 		<a href="/learn" class="text-sm transition-colors hover:text-indigo-300 mb-3 inline-block" style="color: var(--color-text-muted);">
-			&larr; All Lessons
+			&larr; {$t('learn.allLessons')}
 		</a>
 		<h1 class="text-3xl font-bold mb-2" style="color: var(--color-text);">{data.lesson.title}</h1>
 		{#if data.lesson.summary}
 			<p class="text-slate-400">{data.lesson.summary}</p>
 		{/if}
 		<div class="flex items-center gap-3 mt-3">
-			<span class="text-xs" style="color: var(--color-text-muted);">~{data.lesson.estimated_minutes} min</span>
+			<span class="text-xs" style="color: var(--color-text-muted);">{$t('learn.minutes', { min: String(data.lesson.estimated_minutes) })}</span>
 			{#if isCompleted}
-				<span class="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">Completed</span>
+				<span class="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400">{$t('learn.completed')}</span>
 			{/if}
 		</div>
 	</div>
@@ -57,7 +58,7 @@
 				onclick={markComplete}
 				class="px-6 py-3 rounded-lg font-medium transition-colors bg-green-600 hover:bg-green-500 text-white"
 			>
-				Mark lesson as complete
+				{$t('learn.markComplete')}
 			</button>
 		</div>
 	{:else}
@@ -66,7 +67,7 @@
 				<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
 				</svg>
-				Lesson completed!
+				{$t('learn.lessonCompleted')}
 			</div>
 		</div>
 	{/if}
@@ -74,8 +75,8 @@
 	<!-- Practice problems (concept-linked) -->
 	{#if data.matchingProblems.length > 0}
 		<div class="mt-12 pt-8 border-t" style="border-color: var(--border-color);">
-			<h2 class="text-xl font-bold mb-4" style="color: var(--color-text);">Practice these problems</h2>
-			<p class="text-sm text-slate-400 mb-4">Now that you've learned about these concepts, try solving these problems!</p>
+			<h2 class="text-xl font-bold mb-4" style="color: var(--color-text);">{$t('learn.practiceProblems')}</h2>
+			<p class="text-sm text-slate-400 mb-4">{$t('learn.practiceSubtitle')}</p>
 			<div class="grid gap-3">
 				{#each data.matchingProblems as problem}
 					<a
@@ -88,7 +89,7 @@
 									{problem.title}
 								</h3>
 								<span class="text-xs font-medium px-2 py-0.5 rounded-full border {difficultyColors[problem.difficulty] ?? difficultyColors.beginner}">
-									{problem.difficulty}
+									{$t(`difficulty.${problem.difficulty}`)}
 								</span>
 							</div>
 							<svg class="w-4 h-4 text-slate-500 group-hover:text-indigo-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,14 +109,14 @@
 				<svg class="w-4 h-4 group-hover:text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 				</svg>
-				<span class="group-hover:text-indigo-300">Previous lesson</span>
+				<span class="group-hover:text-indigo-300">{$t('learn.prevLesson')}</span>
 			</a>
 		{:else}
 			<div></div>
 		{/if}
 		{#if data.lesson.next_lesson}
 			<a href="/learn/{data.lesson.next_lesson}" class="group flex items-center gap-2 text-sm transition-colors" style="color: var(--color-text-muted);">
-				<span class="group-hover:text-indigo-300">Next lesson</span>
+				<span class="group-hover:text-indigo-300">{$t('learn.nextLesson')}</span>
 				<svg class="w-4 h-4 group-hover:text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 				</svg>

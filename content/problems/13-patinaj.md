@@ -2,6 +2,7 @@
 title: Patinaj
 difficulty: hard
 sort_order: 13
+lang: ro
 concepts: [2d-arrays, loops, nested-loops, file-io]
 hints:
   - >-

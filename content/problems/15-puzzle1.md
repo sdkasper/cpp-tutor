@@ -2,6 +2,7 @@
 title: Puzzle 1
 difficulty: hard
 sort_order: 15
+lang: ro
 concepts: [2d-arrays, loops, nested-loops, file-io]
 hints:
   - >-

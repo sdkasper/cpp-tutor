@@ -2,6 +2,7 @@
 title: Prime 1
 difficulty: hard
 sort_order: 27
+lang: ro
 concepts: [loops, arithmetic, modulo, conditions, file-io]
 hints:
   - >-

@@ -3,7 +3,7 @@ import matter from 'gray-matter';
 import { nanoid } from 'nanoid';
 import { db } from './db.js';
 import { lessons } from './schema.js';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 const lessonModules = import.meta.glob('/content/lessons/*.md', {
 	query: '?raw',
@@ -20,15 +20,29 @@ interface LessonFrontmatter {
 	estimated_minutes: number;
 	prev_lesson: string | null;
 	next_lesson: string | null;
+	lang: string;
 }
 
 function titleFromFilename(filename: string): string {
-	const name = basename(filename, '.md');
+	const name = basename(filename, '.md').replace(/\.(ro|en)$/, '');
 	return name
 		.replace(/^\d+[-_]*/, '')
 		.replace(/[-_]+/g, ' ')
 		.replace(/\b\w/g, (c) => c.toUpperCase())
 		.trim() || name;
+}
+
+function inferLang(filename: string, frontmatter: Record<string, unknown>): 'en' | 'ro' {
+	if (frontmatter.lang === 'ro' || frontmatter.lang === 'en') return frontmatter.lang;
+	if (filename.endsWith('.ro.md')) return 'ro';
+	if (filename.endsWith('.en.md')) return 'en';
+	return 'en';
+}
+
+function slugFromFile(file: string, fmSlug?: string): string {
+	if (fmSlug) return fmSlug;
+	const stripped = file.replace(/\.(ro|en)\.md$/, '.md');
+	return basename(stripped, '.md');
 }
 
 export async function syncLessonFiles() {
@@ -37,12 +51,12 @@ export async function syncLessonFiles() {
 
 	for (const [path, raw] of entries) {
 		const file = basename(path);
-		const fileSlug = basename(file, '.md');
 
 		const { data, content } = matter(raw);
 		const fm = data as Partial<LessonFrontmatter>;
+		const lang = inferLang(file, data);
 
-		const slug = fm.slug || fileSlug;
+		const slug = slugFromFile(file, fm.slug);
 		const title = fm.title || titleFromFilename(file);
 		const sort_order = fm.sort_order ?? 0;
 		const concepts = Array.isArray(fm.concepts) ? fm.concepts : [];
@@ -61,10 +75,13 @@ export async function syncLessonFiles() {
 			content: content.trim(),
 			prev_lesson,
 			next_lesson,
-			source_ref: file
+			source_ref: file,
+			lang
 		};
 
-		const existing = await db.select().from(lessons).where(eq(lessons.slug, slug)).get();
+		const existing = await db.select().from(lessons)
+			.where(and(eq(lessons.slug, slug), eq(lessons.lang, lang)))
+			.get();
 
 		if (existing) {
 			await db.update(lessons).set(lessonData).where(eq(lessons.id, existing.id)).run();

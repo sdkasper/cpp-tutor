@@ -2,6 +2,7 @@
 title: Iepuraș 2
 difficulty: hard
 sort_order: 14
+lang: ro
 concepts: [loops, conditions, arithmetic, file-io]
 hints:
   - >-

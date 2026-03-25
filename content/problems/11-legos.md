@@ -2,6 +2,7 @@
 title: Legos
 difficulty: medium
 sort_order: 11
+lang: ro
 concepts: [loops, arithmetic, conditions, file-io]
 hints:
   - >-

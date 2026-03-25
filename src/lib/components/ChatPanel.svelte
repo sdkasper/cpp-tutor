@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { tick, untrack } from 'svelte';
 	import ChatMessage from './ChatMessage.svelte';
+	import { t } from '$lib/i18n';
 
 	interface ExecutionResult {
 		stdout: string;
@@ -59,7 +60,7 @@
 \`\`\`cpp
 ${currentCode}
 \`\`\``;
-		chatMessages = [...chatMessages, { role: 'user', content: 'Check my code' }];
+		chatMessages = [...chatMessages, { role: 'user', content: 'Check my code' }]; // Keep English for API
 		streaming = true;
 		await scrollToBottom();
 		chatMessages = [...chatMessages, { role: 'assistant', content: '' }];
@@ -74,7 +75,7 @@ ${currentCode}
 			if (!res.ok || !res.body) {
 				chatMessages[chatMessages.length - 1] = {
 					role: 'assistant',
-					content: 'Something went wrong. Please try again.'
+					content: 'Something went wrong. Please try again.' // Error fallback
 				};
 				streaming = false;
 				return;
@@ -135,7 +136,7 @@ ${currentCode}
 			if (!res.ok || !res.body) {
 				chatMessages[chatMessages.length - 1] = {
 					role: 'assistant',
-					content: 'Something went wrong. Please try again.'
+					content: 'Something went wrong. Please try again.' // Error fallback
 				};
 				streaming = false;
 				return;
@@ -178,15 +179,15 @@ ${currentCode}
 
 <div class="flex flex-col h-full">
 	<div class="border-b px-4 py-2 shrink-0 flex items-center justify-between" style="border-color: var(--border-color);">
-		<span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">AI Tutor</span>
+		<span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">{$t('chat.title')}</span>
 		{#if chatMessages.length > 0}
 			<button
 				onclick={resetConversation}
 				disabled={streaming || resetting}
 				class="text-xs text-slate-400 hover:text-white disabled:opacity-50 transition-colors"
-				title="Start a new conversation"
+				title={$t('chat.newConversation')}
 			>
-				{resetting ? 'Clearing...' : 'New Chat'}
+				{resetting ? $t('chat.clearing') : $t('chat.newChat')}
 			</button>
 		{/if}
 	</div>
@@ -197,8 +198,8 @@ ${currentCode}
 				<svg class="w-12 h-12 mx-auto mb-3 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
 				</svg>
-				<p class="text-slate-500 text-sm">Ask your tutor for help!</p>
-				<p class="text-slate-600 text-xs mt-1">Try: "I don't know where to start" or "What's wrong with my code?"</p>
+				<p class="text-slate-500 text-sm">{$t('chat.emptyTitle')}</p>
+				<p class="text-slate-600 text-xs mt-1">{$t('chat.emptyHint')}</p>
 			</div>
 		{/if}
 
@@ -222,7 +223,7 @@ ${currentCode}
 			<textarea
 				bind:value={input}
 				onkeydown={handleKeydown}
-				placeholder="Ask your tutor..."
+				placeholder={$t('chat.placeholder')}
 				rows="2"
 				class="flex-1 border rounded-lg px-3 py-2 text-sm placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 resize-none transition-colors"
 				style="background: var(--color-surface); border-color: var(--border-color); color: var(--color-text);"
@@ -232,7 +233,7 @@ ${currentCode}
 				disabled={streaming || !input.trim()}
 				class="self-end bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-4 py-2 rounded-lg text-sm transition-colors"
 			>
-				Send
+				{$t('chat.send')}
 			</button>
 		</div>
 	</div>

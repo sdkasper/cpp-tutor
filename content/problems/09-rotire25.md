@@ -2,6 +2,7 @@
 title: Rotire 25
 difficulty: medium
 sort_order: 9
+lang: ro
 concepts: [loops, while-loop, modulo, file-io]
 hints:
   - >-

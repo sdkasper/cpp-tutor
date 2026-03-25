@@ -2,6 +2,7 @@
 title: Cartonașe 4
 difficulty: hard
 sort_order: 6
+lang: ro
 concepts: [arrays, loops, for-loop, file-io]
 hints:
   - >-

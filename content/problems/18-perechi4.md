@@ -2,6 +2,7 @@
 title: Perechi 4
 difficulty: medium
 sort_order: 18
+lang: ro
 concepts: [arrays, loops, nested-loops, file-io]
 hints:
   - >-

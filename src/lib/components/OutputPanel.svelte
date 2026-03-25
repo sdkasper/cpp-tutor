@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { t } from '$lib/i18n';
+
 	interface ExecutionResult {
 		stdout: string;
 		stderr: string;
@@ -15,16 +17,18 @@
 
 	let { result, isRunning, onClear }: Props = $props();
 
-	let statusLabel = $derived.by(() => {
-		if (isRunning) return 'Running...';
+	const statusKeys: Record<string, string> = {
+		success: 'output.success',
+		compile_error: 'output.compileError',
+		runtime_error: 'output.runtimeError',
+		timeout: 'output.timeout',
+		error: 'output.error'
+	};
+
+	let statusKey = $derived.by(() => {
+		if (isRunning) return 'output.running';
 		if (!result) return '';
-		switch (result.status) {
-			case 'success': return 'Success';
-			case 'compile_error': return 'Compilation Error';
-			case 'runtime_error': return 'Runtime Error';
-			case 'timeout': return 'Time Limit Exceeded';
-			case 'error': return 'Error';
-		}
+		return statusKeys[result.status] ?? '';
 	});
 
 	let statusClass = $derived.by(() => {
@@ -42,9 +46,9 @@
 <div class="output-panel flex flex-col h-full">
 	<div class="output-header flex items-center justify-between px-3 py-1.5 shrink-0" style="border-color: var(--border-color);">
 		<div class="flex items-center gap-2">
-			<span class="text-xs font-semibold uppercase tracking-wider" style="color: var(--color-text-muted);">Output</span>
-			{#if statusLabel}
-				<span class="text-xs font-medium {statusClass}">{statusLabel}</span>
+			<span class="text-xs font-semibold uppercase tracking-wider" style="color: var(--color-text-muted);">{$t('output.title')}</span>
+			{#if statusKey}
+				<span class="text-xs font-medium {statusClass}">{$t(statusKey)}</span>
 			{/if}
 		</div>
 		{#if result || isRunning}
@@ -54,7 +58,7 @@
 				style="color: var(--color-text-muted);"
 				disabled={isRunning}
 			>
-				Clear
+				{$t('output.clear')}
 			</button>
 		{/if}
 	</div>
@@ -63,37 +67,37 @@
 		{#if isRunning}
 			<div class="flex items-center gap-2 py-4 justify-center">
 				<div class="spinner"></div>
-				<span class="text-sm" style="color: var(--color-text-muted);">Compiling and running...</span>
+				<span class="text-sm" style="color: var(--color-text-muted);">{$t('output.compiling')}</span>
 			</div>
 		{:else if result}
 			{#if result.compile_output}
 				<div class="mb-2">
-					<span class="text-xs font-semibold uppercase tracking-wider output-error">Compiler</span>
+					<span class="text-xs font-semibold uppercase tracking-wider output-error">{$t('output.compiler')}</span>
 					<pre class="output-pre output-error-text mt-1">{result.compile_output}</pre>
 				</div>
 			{/if}
 			{#if result.stdout}
 				<div class="mb-2">
 					{#if result.compile_output || result.stderr}
-						<span class="text-xs font-semibold uppercase tracking-wider output-success">Output</span>
+						<span class="text-xs font-semibold uppercase tracking-wider output-success">{$t('output.output')}</span>
 					{/if}
 					<pre class="output-pre output-success-text mt-1">{result.stdout}</pre>
 				</div>
 			{/if}
 			{#if result.stderr}
 				<div class="mb-2">
-					<span class="text-xs font-semibold uppercase tracking-wider output-error">Stderr</span>
+					<span class="text-xs font-semibold uppercase tracking-wider output-error">{$t('output.stderr')}</span>
 					<pre class="output-pre output-error-text mt-1">{result.stderr}</pre>
 				</div>
 			{/if}
 			{#if result.status === 'success' && !result.stdout && !result.stderr}
-				<p class="text-sm py-2" style="color: var(--color-text-muted);">Program finished with no output.</p>
+				<p class="text-sm py-2" style="color: var(--color-text-muted);">{$t('output.noOutput')}</p>
 			{/if}
 			{#if result.status === 'timeout'}
-				<p class="text-sm py-2 output-error">Program exceeded the 5-second time limit.</p>
+				<p class="text-sm py-2 output-error">{$t('output.timeoutMsg')}</p>
 			{/if}
 		{:else}
-			<p class="text-sm py-2" style="color: var(--color-text-muted);">Run your code to see output here.</p>
+			<p class="text-sm py-2" style="color: var(--color-text-muted);">{$t('output.placeholder')}</p>
 		{/if}
 	</div>
 </div>

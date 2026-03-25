@@ -4,6 +4,7 @@
 	import ChatPanel from '$lib/components/ChatPanel.svelte';
 	import OutputPanel from '$lib/components/OutputPanel.svelte';
 	import { renderMarkdown } from '$lib/utils/markdown';
+	import { t } from '$lib/i18n';
 	import { onMount } from 'svelte';
 
 	let { data }: { data: PageData } = $props();
@@ -152,20 +153,20 @@
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
 				</svg>
 			</div>
-			<h2 class="text-3xl font-bold text-white mb-2">Problem Solved!</h2>
-			<p class="text-slate-300 mb-6">Great work on {data.problem.title}</p>
+			<h2 class="text-3xl font-bold text-white mb-2">{$t('tutor.problemSolved')}</h2>
+			<p class="text-slate-300 mb-6">{$t('tutor.greatWork', { title: data.problem.title })}</p>
 			<div class="flex gap-3 justify-center">
 				<a
 					href="/problems"
 					class="bg-white/10 hover:bg-white/20 text-white font-medium px-5 py-2.5 rounded-lg transition-colors"
 				>
-					Back to Problems
+					{$t('tutor.backToProblems')}
 				</a>
 				<button
 					onclick={() => showCelebration = false}
 					class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-5 py-2.5 rounded-lg transition-colors"
 				>
-					Continue Working
+					{$t('tutor.continueWorking')}
 				</button>
 			</div>
 		</div>
@@ -177,15 +178,15 @@
 	<!-- Problem header -->
 	<div class="border-b px-4 py-3 flex items-center justify-between shrink-0" style="border-color: var(--border-color); background: var(--color-surface);">
 		<div class="flex items-center gap-3">
-			<a href="/problems" class="text-slate-400 hover:text-white text-sm transition-colors">&larr; Back</a>
+			<a href="/problems" class="text-slate-400 hover:text-white text-sm transition-colors">&larr; {$t('tutor.back')}</a>
 			<span class="text-white/20">|</span>
 			<h1 class="text-white font-semibold text-sm sm:text-base">{data.problem.title}</h1>
 			<span class="text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
-				{data.problem.difficulty}
+				{$t(`difficulty.${data.problem.difficulty}`)}
 			</span>
 			{#if isSolved}
 				<span class="text-xs font-medium px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
-					Solved!
+					{$t('tutor.solved')}
 				</span>
 			{/if}
 		</div>
@@ -193,7 +194,7 @@
 			<button
 				onclick={() => fullscreen = !fullscreen}
 				class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded transition-colors"
-				title={fullscreen ? 'Exit fullscreen (Esc)' : 'Fullscreen editor'}
+				title={fullscreen ? $t('tutor.exitFullscreen') : $t('tutor.fullscreen')}
 			>
 				{#if fullscreen}
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,10 +206,10 @@
 					</svg>
 				{/if}
 			</button>
-			<span class="text-xs text-slate-500" title="Keyboard shortcuts">
-				<kbd class="px-1 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">F5</kbd> Run
+			<span class="text-xs text-slate-500" title={$t('tutor.shortcuts')}>
+				<kbd class="px-1 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">F5</kbd> {$t('tutor.run')}
 				<span class="mx-1">|</span>
-				<kbd class="px-1 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">Ctrl</kbd>+<kbd class="px-1 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">Enter</kbd> Check
+				<kbd class="px-1 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">Ctrl</kbd>+<kbd class="px-1 py-0.5 rounded bg-white/5 border border-white/10 text-[10px]">Enter</kbd> {$t('tutor.check')}
 			</span>
 		</div>
 	</div>
@@ -219,19 +220,19 @@
 			onclick={() => activeTab = 'problem'}
 			class="flex-1 py-2 text-sm text-center transition-colors {activeTab === 'problem' ? 'tab-active' : 'text-slate-400'}"
 		>
-			Problem
+			{$t('tutor.tabProblem')}
 		</button>
 		<button
 			onclick={() => activeTab = 'editor'}
 			class="flex-1 py-2 text-sm text-center transition-colors {activeTab === 'editor' ? 'tab-active' : 'text-slate-400'}"
 		>
-			Editor
+			{$t('tutor.tabEditor')}
 		</button>
 		<button
 			onclick={() => activeTab = 'chat'}
 			class="flex-1 py-2 text-sm text-center transition-colors {activeTab === 'chat' ? 'tab-active' : 'text-slate-400'}"
 		>
-			Chat
+			{$t('tutor.tabChat')}
 		</button>
 	</div>
 
@@ -243,18 +244,18 @@
 			{activeTab === 'problem' ? '' : 'hidden lg:block'}
 			w-full lg:w-1/4 border-r overflow-y-auto p-4
 		" style="border-color: var(--border-color);">
-			<h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Problem</h2>
+			<h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">{$t('tutor.problem')}</h2>
 			<div class="prose-rendered text-sm text-slate-300 leading-relaxed">
 				{@html descriptionHtml}
 			</div>
 			{#if data.problem.hints.length > 0}
 				<div class="mt-6">
-					<h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">Hints</h3>
+					<h3 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">{$t('tutor.hints')}</h3>
 					<div class="space-y-2">
 						{#each data.problem.hints as hint, i}
 							<details class="group">
 								<summary class="cursor-pointer text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
-									Hint {i + 1}
+									{$t('tutor.hint', { n: String(i + 1) })}
 								</summary>
 								<p class="mt-1 text-sm text-slate-400 pl-4">{hint}</p>
 							</details>
@@ -271,36 +272,36 @@
 			border-r flex flex-col
 		" style="border-color: var(--border-color);">
 			<div class="border-b px-4 py-2 flex items-center justify-between shrink-0" style="border-color: var(--border-color);">
-				<span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Editor</span>
+				<span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">{$t('tutor.editor')}</span>
 				<div class="flex items-center gap-2">
 					<!-- Font size controls -->
 					<div class="flex items-center gap-1">
 						<button
 							onclick={() => changeFontSize(-1)}
 							class="text-slate-400 hover:text-white text-xs px-1 py-0.5 rounded transition-colors"
-							title="Decrease font size"
+							title={$t('tutor.decreaseFont')}
 						>A-</button>
 						<span class="text-xs text-slate-500 w-6 text-center">{fontSize}</span>
 						<button
 							onclick={() => changeFontSize(1)}
 							class="text-slate-400 hover:text-white text-xs px-1 py-0.5 rounded transition-colors"
-							title="Increase font size"
+							title={$t('tutor.increaseFont')}
 						>A+</button>
 					</div>
 					<span class="text-white/10">|</span>
 					<button
 						onclick={copyCode}
 						class="text-slate-400 hover:text-white text-xs px-2 py-1 rounded transition-colors"
-						title="Copy code"
+						title={$t('tutor.copyCode')}
 					>
-						{copied ? 'Copied!' : 'Copy'}
+						{copied ? $t('tutor.copied') : $t('tutor.copy')}
 					</button>
 					<button
 						onclick={resetCode}
 						class="text-xs px-2 py-1 rounded transition-colors {resetConfirm ? 'text-red-400 hover:text-red-300' : 'text-slate-400 hover:text-white'}"
-						title="Reset to starter code"
+						title={$t('tutor.resetToStarter')}
 					>
-						{resetConfirm ? 'Confirm Reset?' : 'Reset'}
+						{resetConfirm ? $t('tutor.confirmReset') : $t('tutor.reset')}
 					</button>
 					<span class="text-white/10">|</span>
 					<button
@@ -310,20 +311,20 @@
 						style="background: var(--color-primary);"
 						title="Run code (F5)"
 					>
-						{isRunning ? 'Running...' : 'Run'}
+						{isRunning ? $t('tutor.running') : $t('tutor.run')}
 					</button>
 					<button
 						onclick={() => { checkRequested = true; }}
 						class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium px-3 py-1 rounded-md transition-colors"
 					>
-						Check
+						{$t('tutor.check')}
 					</button>
 					<button
 						onclick={() => { showStdin = !showStdin; }}
 						class="text-xs px-2 py-1 rounded transition-colors {showStdin ? 'text-white bg-white/10' : 'text-slate-400 hover:text-white'}"
-						title="Toggle stdin input"
+						title={$t('tutor.toggleStdin')}
 					>
-						Input
+						{$t('tutor.input')}
 					</button>
 					<span class="text-xs text-slate-500">C++</span>
 				</div>
@@ -332,7 +333,7 @@
 				<div class="border-b px-3 py-2 shrink-0" style="border-color: var(--border-color);">
 					<textarea
 						bind:value={stdinInput}
-						placeholder="Program input (stdin)..."
+						placeholder={$t('tutor.stdinPlaceholder')}
 						rows="3"
 						class="w-full border rounded px-2 py-1 text-xs resize-none focus:outline-none focus:border-blue-500"
 						style="background: var(--color-surface); border-color: var(--border-color); color: var(--color-text); font-family: 'JetBrains Mono', monospace;"

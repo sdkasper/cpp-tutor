@@ -9,7 +9,7 @@ export const students = sqliteTable('students', {
 
 export const problems = sqliteTable('problems', {
 	id: text('id').primaryKey(),
-	slug: text('slug').notNull().unique(),
+	slug: text('slug').notNull(),
 	title: text('title').notNull(),
 	difficulty: text('difficulty').notNull().default('beginner'),
 	description: text('description').notNull(),
@@ -19,12 +19,13 @@ export const problems = sqliteTable('problems', {
 	source_type: text('source_type').notNull().default('markdown'),
 	source_ref: text('source_ref').notNull().default(''),
 	sort_order: integer('sort_order').notNull().default(0),
-	concepts: text('concepts').notNull().default('[]')
+	concepts: text('concepts').notNull().default('[]'),
+	lang: text('lang').notNull().default('en')
 });
 
 export const lessons = sqliteTable('lessons', {
 	id: text('id').primaryKey(),
-	slug: text('slug').notNull().unique(),
+	slug: text('slug').notNull(),
 	title: text('title').notNull(),
 	sort_order: integer('sort_order').notNull().default(0),
 	concepts: text('concepts').notNull().default('[]'),
@@ -33,7 +34,8 @@ export const lessons = sqliteTable('lessons', {
 	content: text('content').notNull(),
 	prev_lesson: text('prev_lesson'),
 	next_lesson: text('next_lesson'),
-	source_ref: text('source_ref').notNull().default('')
+	source_ref: text('source_ref').notNull().default(''),
+	lang: text('lang').notNull().default('en')
 });
 
 export const lessonProgress = sqliteTable('lesson_progress', {

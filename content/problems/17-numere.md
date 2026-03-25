@@ -2,6 +2,7 @@
 title: Numere
 difficulty: hard
 sort_order: 17
+lang: ro
 concepts: [loops, arithmetic, modulo, file-io]
 hints:
   - >-

@@ -21,7 +21,7 @@ A SvelteKit web app where students solve C++ programming problems with AI guidan
 - **28 Problems** — 5 English introductory problems (Hello World → Arrays) and 23 Romanian competitive programming problems
 - **Progress Tracking** — Per-student stats, lesson completion, problem tracking, and automatic solve detection
 - **Dark/Light Theme** — LeanProductivity-branded color palette with WCAG AA contrast compliance
-- **Bilingual Support** — Tutor auto-detects language from the problem description and responds accordingly
+- **Multilingual (EN/RO)** — Full English and Romanian support: UI toggle in nav bar, all 16 lessons translated, all 28 problems available in both languages. Locale persists via cookie.
 - **Admin Panel** — Sync bundled content or upload new `.md`/`.pdf` problems at runtime
 - **Mobile Responsive** — Tabbed layout on small screens for problem/editor/chat panels
 

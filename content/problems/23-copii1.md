@@ -2,6 +2,7 @@
 title: Copii 1
 difficulty: hard
 sort_order: 23
+lang: ro
 concepts: [arrays, loops, conditions, file-io]
 hints:
   - >-

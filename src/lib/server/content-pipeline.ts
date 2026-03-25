@@ -3,7 +3,7 @@ import matter from 'gray-matter';
 import { nanoid } from 'nanoid';
 import { db } from './db.js';
 import { problems } from './schema.js';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 const markdownModules = import.meta.glob('/content/problems/*.md', {
 	query: '?raw',
@@ -28,6 +28,22 @@ interface ProblemFrontmatter {
 	solution_notes: string;
 	sort_order: number;
 	concepts: string[];
+	lang: string;
+}
+
+function inferLang(filename: string, frontmatter: Record<string, unknown>): 'en' | 'ro' {
+	if (frontmatter.lang === 'ro' || frontmatter.lang === 'en') return frontmatter.lang;
+	if (filename.endsWith('.ro.md')) return 'ro';
+	if (filename.endsWith('.en.md')) return 'en';
+	return 'en';
+}
+
+function stripLangExtension(filename: string): string {
+	return filename.replace(/\.(ro|en)\.md$/, '.md');
+}
+
+function slugFromFile(file: string): string {
+	return basename(stripLangExtension(file), '.md');
 }
 
 function titleFromFilename(filename: string): string {
@@ -98,13 +114,16 @@ export async function syncMarkdownFiles() {
 
 	for (const [path, raw] of entries) {
 		const file = basename(path);
-		const slug = basename(file, '.md');
+		const slug = slugFromFile(file);
 		const normalized = normalizeMarkdown(file, raw);
 
 		const { data, content } = matter(normalized);
 		const fm = data as ProblemFrontmatter;
+		const lang = inferLang(file, data);
 
-		const existing = await db.select().from(problems).where(eq(problems.slug, slug)).get();
+		const existing = await db.select().from(problems)
+			.where(and(eq(problems.slug, slug), eq(problems.lang, lang)))
+			.get();
 
 		const problemData = {
 			slug,
@@ -117,7 +136,8 @@ export async function syncMarkdownFiles() {
 			source_type: 'markdown' as const,
 			source_ref: file,
 			sort_order: fm.sort_order,
-			concepts: JSON.stringify(fm.concepts)
+			concepts: JSON.stringify(fm.concepts),
+			lang
 		};
 
 		if (existing) {

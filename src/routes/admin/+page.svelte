@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from '$lib/i18n';
 	let title = $state('');
 	let difficulty = $state('beginner');
 	let file: File | null = $state(null);

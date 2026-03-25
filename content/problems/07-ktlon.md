@@ -2,6 +2,7 @@
 title: Ktlon
 difficulty: medium
 sort_order: 7
+lang: ro
 concepts: [arrays, loops, for-loop, file-io, conditions]
 hints:
   - >-

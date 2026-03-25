@@ -1,5 +1,6 @@
 <script lang="ts">
 	import RunnableCode from './RunnableCode.svelte';
+	import { t } from '$lib/i18n';
 
 	interface Props {
 		description: string;
@@ -14,7 +15,7 @@
 
 <div class="exercise-block rounded-lg border p-4 my-6" style="border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 5%, var(--color-surface));">
 	<div class="flex items-center gap-2 mb-3">
-		<span class="text-sm font-bold px-2 py-0.5 rounded" style="background: var(--color-primary); color: white;">Try it yourself</span>
+		<span class="text-sm font-bold px-2 py-0.5 rounded" style="background: var(--color-primary); color: white;">{$t('exercise.title')}</span>
 	</div>
 	<div class="text-sm mb-3" style="color: var(--color-text);">
 		{@html description}
@@ -32,7 +33,7 @@
 					class="text-xs px-2 py-1 rounded transition-colors hover:bg-white/10"
 					style="color: var(--color-text-muted);"
 				>
-					Need a hint?
+					{$t('exercise.hint')}
 				</button>
 			{/if}
 		</div>

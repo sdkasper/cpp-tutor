@@ -2,6 +2,7 @@
 title: Cadouri 1
 difficulty: medium
 sort_order: 21
+lang: ro
 concepts: [arrays, loops, conditions, file-io]
 hints:
   - >-

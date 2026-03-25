@@ -2,6 +2,7 @@
 title: Mostenire
 difficulty: hard
 sort_order: 24
+lang: ro
 concepts: [arrays, loops, arithmetic, file-io]
 hints:
   - >-

@@ -42,7 +42,7 @@ export async function initDb() {
 
 		CREATE TABLE IF NOT EXISTS problems (
 			id TEXT PRIMARY KEY,
-			slug TEXT NOT NULL UNIQUE,
+			slug TEXT NOT NULL,
 			title TEXT NOT NULL,
 			difficulty TEXT NOT NULL DEFAULT 'beginner',
 			description TEXT NOT NULL,
@@ -51,7 +51,9 @@ export async function initDb() {
 			starter_code TEXT NOT NULL DEFAULT '',
 			source_type TEXT NOT NULL DEFAULT 'markdown',
 			source_ref TEXT NOT NULL DEFAULT '',
-			sort_order INTEGER NOT NULL DEFAULT 0
+			sort_order INTEGER NOT NULL DEFAULT 0,
+			concepts TEXT NOT NULL DEFAULT '[]',
+			lang TEXT NOT NULL DEFAULT 'en'
 		);
 
 		CREATE TABLE IF NOT EXISTS student_progress (
@@ -89,7 +91,7 @@ export async function initDb() {
 
 		CREATE TABLE IF NOT EXISTS lessons (
 			id TEXT PRIMARY KEY,
-			slug TEXT NOT NULL UNIQUE,
+			slug TEXT NOT NULL,
 			title TEXT NOT NULL,
 			sort_order INTEGER NOT NULL DEFAULT 0,
 			concepts TEXT NOT NULL DEFAULT '[]',
@@ -98,7 +100,8 @@ export async function initDb() {
 			content TEXT NOT NULL,
 			prev_lesson TEXT,
 			next_lesson TEXT,
-			source_ref TEXT NOT NULL DEFAULT ''
+			source_ref TEXT NOT NULL DEFAULT '',
+			lang TEXT NOT NULL DEFAULT 'en'
 		);
 
 		CREATE TABLE IF NOT EXISTS lesson_progress (
@@ -111,10 +114,16 @@ export async function initDb() {
 		);
 	`);
 
-	// Add concepts column to problems if it doesn't exist (backward-compatible)
-	try {
-		await getClient().execute('ALTER TABLE problems ADD COLUMN concepts TEXT NOT NULL DEFAULT \'[]\'');
-	} catch {
-		// Column already exists, ignore
+	// Add columns if they don't exist (backward-compatible migrations)
+	const migrations = [
+		"ALTER TABLE problems ADD COLUMN concepts TEXT NOT NULL DEFAULT '[]'",
+		"ALTER TABLE problems ADD COLUMN lang TEXT NOT NULL DEFAULT 'en'",
+		"ALTER TABLE lessons ADD COLUMN lang TEXT NOT NULL DEFAULT 'en'"
+	];
+	for (const sql of migrations) {
+		try { await getClient().execute(sql); } catch { /* already exists */ }
 	}
+
+	// Drop unique constraint on slug for problems and lessons (needed for multi-lang)
+	// SQLite doesn't support DROP CONSTRAINT, so we handle duplicates in the pipeline
 }

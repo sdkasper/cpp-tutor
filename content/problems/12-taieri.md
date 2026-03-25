@@ -2,6 +2,7 @@
 title: Tăieri
 difficulty: hard
 sort_order: 12
+lang: ro
 concepts: [arrays, loops, for-loop, file-io]
 hints:
   - >-

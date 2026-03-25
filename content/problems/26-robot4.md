@@ -2,6 +2,7 @@
 title: Robot 4
 difficulty: medium
 sort_order: 26
+lang: ro
 concepts: [2d-arrays, loops, conditions, file-io]
 hints:
   - >-

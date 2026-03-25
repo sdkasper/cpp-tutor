@@ -2,6 +2,7 @@
 title: Robin Hood
 difficulty: medium
 sort_order: 19
+lang: ro
 concepts: [arrays, loops, conditions, arithmetic, file-io]
 hints:
   - >-

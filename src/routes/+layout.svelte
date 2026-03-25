@@ -3,6 +3,8 @@
 	import { page } from '$app/stores';
 	import { navigating } from '$app/stores';
 	import { theme, toggleTheme } from '$lib/stores/theme';
+	import { locale, toggleLocale } from '$lib/stores/locale';
+	import { t } from '$lib/i18n';
 	import { onMount } from 'svelte';
 
 	let { children } = $props();
@@ -40,17 +42,24 @@
 					&lt;C++ Tutor /&gt;
 				</a>
 				<div class="hidden sm:flex gap-4 text-sm">
-					<a href="/learn" class="{navClass('/learn')} transition-colors">Learn</a>
-					<a href="/problems" class="{navClass('/problems')} transition-colors">Problems</a>
-					<a href="/progress" class="{navClass('/progress')} transition-colors">Progress</a>
-					<a href="/admin" class="{navClass('/admin')} transition-colors">Admin</a>
+					<a href="/learn" class="{navClass('/learn')} transition-colors">{$t('nav.learn')}</a>
+					<a href="/problems" class="{navClass('/problems')} transition-colors">{$t('nav.problems')}</a>
+					<a href="/progress" class="{navClass('/progress')} transition-colors">{$t('nav.progress')}</a>
+					<a href="/admin" class="{navClass('/admin')} transition-colors">{$t('nav.admin')}</a>
 				</div>
 			</div>
 			<div class="flex items-center gap-2">
 				<button
+					onclick={toggleLocale}
+					class="px-2 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+					aria-label="Toggle language"
+				>
+					{$locale === 'en' ? 'RO' : 'EN'}
+				</button>
+				<button
 					onclick={toggleTheme}
 					class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
-					aria-label="Toggle theme"
+					aria-label={$t('nav.toggleTheme')}
 				>
 					{#if $theme === 'dark'}
 						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,7 +75,7 @@
 				<button
 					onclick={() => mobileMenuOpen = !mobileMenuOpen}
 					class="sm:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
-					aria-label="Toggle menu"
+					aria-label={$t('nav.toggleMenu')}
 				>
 					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						{#if mobileMenuOpen}
@@ -80,10 +89,10 @@
 		</div>
 		{#if mobileMenuOpen}
 			<div class="sm:hidden border-t px-4 py-2 flex flex-col gap-1" style="border-color: var(--border-color);">
-				<a href="/learn" class="{navClass('/learn')} transition-colors py-2 text-sm" onclick={() => mobileMenuOpen = false}>Learn</a>
-				<a href="/problems" class="{navClass('/problems')} transition-colors py-2 text-sm" onclick={() => mobileMenuOpen = false}>Problems</a>
-				<a href="/progress" class="{navClass('/progress')} transition-colors py-2 text-sm" onclick={() => mobileMenuOpen = false}>Progress</a>
-				<a href="/admin" class="{navClass('/admin')} transition-colors py-2 text-sm" onclick={() => mobileMenuOpen = false}>Admin</a>
+				<a href="/learn" class="{navClass('/learn')} transition-colors py-2 text-sm" onclick={() => mobileMenuOpen = false}>{$t('nav.learn')}</a>
+				<a href="/problems" class="{navClass('/problems')} transition-colors py-2 text-sm" onclick={() => mobileMenuOpen = false}>{$t('nav.problems')}</a>
+				<a href="/progress" class="{navClass('/progress')} transition-colors py-2 text-sm" onclick={() => mobileMenuOpen = false}>{$t('nav.progress')}</a>
+				<a href="/admin" class="{navClass('/admin')} transition-colors py-2 text-sm" onclick={() => mobileMenuOpen = false}>{$t('nav.admin')}</a>
 			</div>
 		{/if}
 	</nav>

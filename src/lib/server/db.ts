@@ -124,6 +124,55 @@ export async function initDb() {
 		try { await getClient().execute(sql); } catch { /* already exists */ }
 	}
 
-	// Drop unique constraint on slug for problems and lessons (needed for multi-lang)
-	// SQLite doesn't support DROP CONSTRAINT, so we handle duplicates in the pipeline
+	// Recreate tables to drop UNIQUE constraint on slug (needed for multi-lang).
+	// SQLite doesn't support DROP CONSTRAINT, so we rename → recreate → copy → drop.
+	// This is idempotent: if the table already lacks the UNIQUE constraint, the
+	// index check returns nothing and we skip.
+	for (const table of ['problems', 'lessons']) {
+		try {
+			const indexes = await getClient().execute(`PRAGMA index_list(${table})`);
+			const hasUniqueSlug = indexes.rows.some((r: any) =>
+				r.unique === 1 && String(r.name).includes('slug')
+			);
+			if (!hasUniqueSlug) continue;
+
+			// Check for auto-generated unique index on slug
+			const indexInfo = await getClient().execute(
+				`SELECT sql FROM sqlite_master WHERE type='index' AND tbl_name='${table}' AND sql LIKE '%slug%'`
+			);
+			if (indexInfo.rows.length === 0) {
+				// UNIQUE constraint is inline (from CREATE TABLE), need to recreate table
+				const cols = table === 'problems'
+					? 'id, slug, title, difficulty, description, hints, solution_notes, starter_code, source_type, source_ref, sort_order, concepts, lang'
+					: 'id, slug, title, sort_order, concepts, summary, estimated_minutes, content, prev_lesson, next_lesson, source_ref, lang';
+
+				const createSql = table === 'problems'
+					? `CREATE TABLE ${table}_new (
+						id TEXT PRIMARY KEY, slug TEXT NOT NULL, title TEXT NOT NULL,
+						difficulty TEXT NOT NULL DEFAULT 'beginner', description TEXT NOT NULL,
+						hints TEXT NOT NULL DEFAULT '[]', solution_notes TEXT NOT NULL DEFAULT '',
+						starter_code TEXT NOT NULL DEFAULT '', source_type TEXT NOT NULL DEFAULT 'markdown',
+						source_ref TEXT NOT NULL DEFAULT '', sort_order INTEGER NOT NULL DEFAULT 0,
+						concepts TEXT NOT NULL DEFAULT '[]', lang TEXT NOT NULL DEFAULT 'en'
+					)`
+					: `CREATE TABLE ${table}_new (
+						id TEXT PRIMARY KEY, slug TEXT NOT NULL, title TEXT NOT NULL,
+						sort_order INTEGER NOT NULL DEFAULT 0, concepts TEXT NOT NULL DEFAULT '[]',
+						summary TEXT NOT NULL DEFAULT '', estimated_minutes INTEGER NOT NULL DEFAULT 10,
+						content TEXT NOT NULL, prev_lesson TEXT, next_lesson TEXT,
+						source_ref TEXT NOT NULL DEFAULT '', lang TEXT NOT NULL DEFAULT 'en'
+					)`;
+
+				await getClient().executeMultiple(`
+					${createSql};
+					INSERT INTO ${table}_new (${cols}) SELECT ${cols} FROM ${table};
+					DROP TABLE ${table};
+					ALTER TABLE ${table}_new RENAME TO ${table};
+				`);
+				console.log(`Migrated ${table}: removed UNIQUE constraint on slug`);
+			}
+		} catch (e) {
+			console.log(`Migration check for ${table}:`, e);
+		}
+	}
 }

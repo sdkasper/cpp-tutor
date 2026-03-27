@@ -5,6 +5,7 @@
 	import { theme, toggleTheme } from '$lib/stores/theme';
 	import { locale, toggleLocale } from '$lib/stores/locale';
 	import { t } from '$lib/i18n';
+	import { invalidateAll } from '$app/navigation';
 	import { onMount } from 'svelte';
 
 	let { children } = $props();
@@ -50,11 +51,27 @@
 			</div>
 			<div class="flex items-center gap-2">
 				<button
-					onclick={toggleLocale}
-					class="px-2 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+					onclick={() => { toggleLocale(); invalidateAll(); }}
+					class="px-2 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-white/10 transition-colors flex items-center gap-1.5"
 					aria-label="Toggle language"
 				>
-					{$locale === 'en' ? 'RO' : 'EN'}
+					{#if $locale === 'en'}
+						<svg class="w-4 h-3 rounded-sm overflow-hidden" viewBox="0 0 640 480">
+							<rect width="640" height="160" fill="#002B7F"/>
+							<rect y="160" width="640" height="160" fill="#FCD116"/>
+							<rect y="320" width="640" height="160" fill="#CE1126"/>
+						</svg>
+						RO
+					{:else}
+						<svg class="w-4 h-3 rounded-sm overflow-hidden" viewBox="0 0 640 480">
+							<rect width="640" height="480" fill="#012169"/>
+							<path d="M75 0l244 181L562 0h78v62L400 241l240 178v61h-80L320 301 81 480H0v-60l239-178L0 64V0h75z" fill="#fff"/>
+							<path d="M424 281l216 159v40L369 281h55zm-184 20l6 35L54 480H0l240-179zM640 0v3L391 191l2-44L590 0h50zM0 0l239 176h-60L0 42V0z" fill="#C8102E"/>
+							<path d="M241 0v480h160V0H241zM0 160v160h640V160H0z" fill="#fff"/>
+							<path d="M0 193v96h640v-96H0zM273 0v480h96V0h-96z" fill="#C8102E"/>
+						</svg>
+						EN
+					{/if}
 				</button>
 				<button
 					onclick={toggleTheme}

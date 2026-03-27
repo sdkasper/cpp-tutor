@@ -115,33 +115,25 @@ export async function initDb() {
 	`);
 
 	// Add columns if they don't exist (backward-compatible migrations)
-	const migrations = [
+	const colMigrations = [
 		"ALTER TABLE problems ADD COLUMN concepts TEXT NOT NULL DEFAULT '[]'",
 		"ALTER TABLE problems ADD COLUMN lang TEXT NOT NULL DEFAULT 'en'",
 		"ALTER TABLE lessons ADD COLUMN lang TEXT NOT NULL DEFAULT 'en'"
 	];
-	for (const sql of migrations) {
+	for (const sql of colMigrations) {
 		try { await getClient().execute(sql); } catch { /* already exists */ }
 	}
 
-	// Recreate tables to drop UNIQUE constraint on slug (needed for multi-lang).
-	// SQLite doesn't support DROP CONSTRAINT, so we rename → recreate → copy → drop.
-	// This is idempotent: if the table already lacks the UNIQUE constraint, the
-	// index check returns nothing and we skip.
-	for (const table of ['problems', 'lessons']) {
-		try {
-			const indexes = await getClient().execute(`PRAGMA index_list(${table})`);
-			const hasUniqueSlug = indexes.rows.some((r: any) =>
-				r.unique === 1 && String(r.name).includes('slug')
-			);
-			if (!hasUniqueSlug) continue;
-
-			// Check for auto-generated unique index on slug
-			const indexInfo = await getClient().execute(
-				`SELECT sql FROM sqlite_master WHERE type='index' AND tbl_name='${table}' AND sql LIKE '%slug%'`
-			);
-			if (indexInfo.rows.length === 0) {
-				// UNIQUE constraint is inline (from CREATE TABLE), need to recreate table
+	// One-time migration: recreate problems/lessons without UNIQUE slug constraint.
+	// The original schema had `slug TEXT NOT NULL UNIQUE` which blocks multi-lang rows
+	// (same slug, different lang). SQLite has no DROP CONSTRAINT, so we rename → create
+	// new → copy → drop old. Skips PRAGMA detection (unreliable on Turso/libSQL).
+	const client = getClient();
+	try {
+		await client.execute('CREATE TABLE IF NOT EXISTS _migrations (name TEXT PRIMARY KEY)');
+		const done = await client.execute("SELECT 1 FROM _migrations WHERE name = 'remove_unique_slug_v2'");
+		if (done.rows.length === 0) {
+			for (const table of ['problems', 'lessons'] as const) {
 				const cols = table === 'problems'
 					? 'id, slug, title, difficulty, description, hints, solution_notes, starter_code, source_type, source_ref, sort_order, concepts, lang'
 					: 'id, slug, title, sort_order, concepts, summary, estimated_minutes, content, prev_lesson, next_lesson, source_ref, lang';
@@ -163,7 +155,8 @@ export async function initDb() {
 						source_ref TEXT NOT NULL DEFAULT '', lang TEXT NOT NULL DEFAULT 'en'
 					)`;
 
-				await getClient().executeMultiple(`
+				await client.executeMultiple(`
+					DROP TABLE IF EXISTS ${table}_new;
 					${createSql};
 					INSERT INTO ${table}_new (${cols}) SELECT ${cols} FROM ${table};
 					DROP TABLE ${table};
@@ -171,8 +164,9 @@ export async function initDb() {
 				`);
 				console.log(`Migrated ${table}: removed UNIQUE constraint on slug`);
 			}
-		} catch (e) {
-			console.log(`Migration check for ${table}:`, e);
+			await client.execute("INSERT INTO _migrations VALUES ('remove_unique_slug_v2')");
 		}
+	} catch (e) {
+		console.log('Slug migration:', e);
 	}
 }

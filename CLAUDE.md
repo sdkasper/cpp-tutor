@@ -84,3 +84,7 @@ The app has 5 English introductory problems, 23 Romanian competitive programming
 ## Learn Section
 
 Interactive lessons live in `content/lessons/*.md` with frontmatter fields: title, slug, sort_order, concepts, summary, estimated_minutes, prev_lesson, next_lesson. Lessons use `<!-- run -->` markers for runnable code examples and `<!-- exercise -->` / `<!-- /exercise -->` markers for try-it-yourself blocks. Both lessons and problems have `concepts` arrays that enable dynamic cross-linking.
+
+## Agile Artifacts
+
+Epics, User Stories, NFRs, and Test Cases live in `D:\Lean Notes\01 Projects\CPP Tutor\`. Artifact files use Obsidian Flavored Markdown with YAML frontmatter. Tags use `cpptutor/` prefix (e.g., `cpptutor/userStory`, `cpptutor/epic`).

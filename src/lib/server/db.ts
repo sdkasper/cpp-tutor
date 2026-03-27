@@ -155,13 +155,13 @@ export async function initDb() {
 						source_ref TEXT NOT NULL DEFAULT '', lang TEXT NOT NULL DEFAULT 'en'
 					)`;
 
-				await client.executeMultiple(`
-					DROP TABLE IF EXISTS ${table}_new;
-					${createSql};
-					INSERT INTO ${table}_new (${cols}) SELECT ${cols} FROM ${table};
-					DROP TABLE ${table};
-					ALTER TABLE ${table}_new RENAME TO ${table};
-				`);
+				await client.execute('PRAGMA foreign_keys = OFF');
+				await client.execute(`DROP TABLE IF EXISTS ${table}_new`);
+				await client.execute(createSql);
+				await client.execute(`INSERT INTO ${table}_new (${cols}) SELECT ${cols} FROM ${table}`);
+				await client.execute(`DROP TABLE ${table}`);
+				await client.execute(`ALTER TABLE ${table}_new RENAME TO ${table}`);
+				await client.execute('PRAGMA foreign_keys = ON');
 				console.log(`Migrated ${table}: removed UNIQUE constraint on slug`);
 			}
 			await client.execute("INSERT INTO _migrations VALUES ('remove_unique_slug_v2')");
